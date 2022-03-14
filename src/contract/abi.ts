@@ -1,5 +1,5 @@
 // ZapMaster ABI
-export const ZapMasterAbi = [
+export const zapMasterAbi = [
   {
     "inputs": [
       {
@@ -886,7 +886,7 @@ export const ZapMasterAbi = [
 ];
 
 // Zap ABI
-export const ZapAbi = [
+export const zapAbi = [
   {
     "inputs": [
       {
@@ -1487,7 +1487,7 @@ export const ZapAbi = [
 ];
 
 // ZapGetters ABI
-export const ZapGettersAbi = [
+export const zapGettersAbi = [
   {
     "inputs": [
       {
