@@ -11,30 +11,30 @@ const signer = provider.getSigner(0);
 let zapAddress: string;
 let zapMasterAddress: string;
 
-export const deployZapOracles = async () => {
-  const oraclesFactory = new ethers.ContractFactory(
+export const deployZap = async () => {
+  const zapFactory = new ethers.ContractFactory(
     abis.zapAbi,
     bytecodes.zapBytecode,
     signer,
   );
 
-  const zapOracles = await oraclesFactory.deploy();
+  const zap = await zapFactory.deploy();
 
-  await zapOracles.deployed();
+  await zap.deployed();
 
-  zapAddress = zapOracles.address;
+  zapAddress = zap.address;
 
-  return zapOracles;
+  return zap;
 };
 
 export const deployZapMaster = async () => {
-  const masterFactory = new ethers.ContractFactory(
+  const zapMasterFactory = new ethers.ContractFactory(
     abis.zapMasterAbi,
     bytecodes.zapMasterBytecode,
     signer,
   );
 
-  let zapMaster = await masterFactory.deploy();
+  let zapMaster = await zapMasterFactory.deploy();
 
   await zapMaster.deployed();
 
