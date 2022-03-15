@@ -118,3 +118,19 @@ export const vaultAddresses = {
     56: '',
 }
 
+export const zapTokenAddresses = {
+        // Localhost
+        1337: '0x0165878A594ca255338adfa4d48449f69242Eb8F',
+
+        // Rinkeby
+        4: '',
+      
+        // Ethereum Mainnet
+        1: '',
+      
+        // BSC Testnet
+        97: '0xaf0E98CD32C9d90A07eb62821eE7c0761bc6C44d',
+      
+        // BSC Mainnet
+        56: '',
+}

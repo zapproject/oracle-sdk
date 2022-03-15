@@ -11,14 +11,14 @@ const signer = provider.getSigner(0);
 let zapAddress: string;
 let zapMasterAddress: string;
 
-export const deployZap = async () => {
+export const deployZap = async (tokenAddress: string) => {
   const zapFactory = new ethers.ContractFactory(
     abis.zapAbi,
     bytecodes.zapBytecode,
     signer,
   );
 
-  const zap = await zapFactory.deploy();
+  const zap = await zapFactory.deploy(tokenAddress);
 
   await zap.deployed();
 
@@ -27,26 +27,112 @@ export const deployZap = async () => {
   return zap;
 };
 
-
-
-
-export const deployZapMaster = async () => {
+export const deployZapMaster = async (_zapAddress: string, tokenAddress: string) => {
   const zapMasterFactory = new ethers.ContractFactory(
     abis.zapMasterAbi,
     bytecodes.zapMasterBytecode,
     signer,
   );
 
-  let zapMaster = await zapMasterFactory.deploy();
+  let zapMaster = await zapMasterFactory.deploy(_zapAddress, tokenAddress);
 
   await zapMaster.deployed();
 
-  zapMaster.initializeVault(zapMasterAddress);
+  // zapMaster.initializeVault(zapMasterAddress);
 
   zapMasterAddress = zapMaster.address;
 
   return zapMaster;
 };
+
+export const deployZapToken = async () => {
+  const zapTokenFactory = new ethers.ContractFactory(
+    abis.zapTokenAbi,
+    bytecodes.zapTokenByteCode,
+    signer,
+  );
+
+  const zapToken = await zapTokenFactory.deploy();
+
+  await zapToken.deployed();
+
+  return zapToken;
+}
+
+export const deployZapGettersLibrary = async () => {
+  const zapGettersLibraryFactory = new ethers.ContractFactory(
+    abis.zapGettersLibraryAbi,
+    bytecodes.zapGettersLibraryByteCode,
+    signer,
+  );
+
+  const zapGettersLibrary = await zapGettersLibraryFactory.deploy();
+
+  await zapGettersLibrary.deployed();
+
+  return zapGettersLibrary;
+}
+
+export const deployZapDispute = async () => {
+  const zapDisputeFactory = new ethers.ContractFactory(
+    abis.zapDisputeAbi,
+    bytecodes.zapDisputeByteCode,
+    signer,
+  );
+
+  const zapDispute = await zapDisputeFactory.deploy();
+
+  await zapDispute.deployed();
+
+  return zapDispute;
+}
+
+export const deployZapStake = async () => {
+  const zapStakeFactory = new ethers.ContractFactory(
+    abis.zapStakeAbi,
+    bytecodes.zapStakeByteCode,
+    signer,
+  );
+
+  const zapStake = await zapStakeFactory.deploy();
+
+  await zapStake.deployed();
+
+  return zapStake;
+}
+
+export const deployZapLibrary = async () => {
+  const zapLibraryFactory = new ethers.ContractFactory(
+    abis.zapLibraryAbi,
+    bytecodes.zapLibraryByteCode,
+    signer,
+  );
+
+  const zapLibrary = await zapLibraryFactory.deploy();
+
+  await zapLibrary.deployed();
+
+  return zapLibrary;
+}
+
+export const deployVault = async (_zapMasterAddress: string, zapToken: string) => {
+  const vaultFactory = new ethers.ContractFactory(
+    abis.vaultAbi,
+    bytecodes.vaultByteCode,
+    signer,
+  );
+
+  const vault = await vaultFactory.deploy(zapToken, _zapMasterAddress);
+
+  await vault.deployed();
+
+  return vault;
+}
+
+
+
+
+
 
 // TODO: Figure out deploying zap getters (after class creation), since it doens't have its own address
 // export const deployZapGetters = async () => {
