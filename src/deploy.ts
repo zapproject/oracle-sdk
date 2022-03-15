@@ -8,13 +8,20 @@ const provider = new ethers.providers.JsonRpcProvider('http://localhost:8545');
 
 const signer = provider.getSigner(0);
 
+const stakeCode = "__$341c69a3b8ea65d7eeecd190190dea4d1b$__"
+const disputeCode = "__$965cfd6d1cee46a73cf1c675b6712824df$__"
+const libraryCode = "__$6f5c017f31ba759198a3415002c70b4aa5$__"
+
 let zapAddress: string;
 let zapMasterAddress: string;
 
-export const deployZap = async (tokenAddress: string) => {
+export const deployZap = async (tokenAddress: string, _zapDisputeAddress: string, _zapStakeAddress: string, _zapLibraryAddress: string) => {
+  const linkedBytecode = bytecodes.zapByteCode.replaceAll(disputeCode, _zapDisputeAddress.slice(2, _zapDisputeAddress.length).toLowerCase());
+  const linkedBytecode2 = linkedBytecode.replaceAll(stakeCode, _zapStakeAddress.slice(2, _zapStakeAddress.length).toLowerCase());
+  const linkedBytecode3 = linkedBytecode2.replaceAll(libraryCode, _zapLibraryAddress.slice(2, _zapLibraryAddress.length).toLowerCase());
   const zapFactory = new ethers.ContractFactory(
     abis.zapAbi,
-    bytecodes.zapBytecode,
+    linkedBytecode3,
     signer,
   );
 
@@ -27,10 +34,11 @@ export const deployZap = async (tokenAddress: string) => {
   return zap;
 };
 
-export const deployZapMaster = async (_zapAddress: string, tokenAddress: string) => {
+export const deployZapMaster = async (_zapAddress: string, tokenAddress: string, _zapStakeAddress: string) => {
+  const linkedBytecode = bytecodes.zapMasterBytecode.replace(stakeCode, _zapStakeAddress.slice(2, _zapStakeAddress.length).toLowerCase());
   const zapMasterFactory = new ethers.ContractFactory(
     abis.zapMasterAbi,
-    bytecodes.zapMasterBytecode,
+    linkedBytecode,
     signer,
   );
 
@@ -87,10 +95,13 @@ export const deployZapDispute = async () => {
   return zapDispute;
 }
 
-export const deployZapStake = async () => {
+export const deployZapStake = async (_zapDisputeAddress: string) => {
+  const linkedBytecode = bytecodes.zapStakeByteCode.replaceAll(disputeCode, _zapDisputeAddress.slice(2, _zapDisputeAddress.length).toLowerCase());
+  console.log( _zapDisputeAddress.slice(2, _zapDisputeAddress.length).toLowerCase())
+  // zapStakeByteCode.replaceAll(disputeCode, _zapDisputeAddress.slice(2, _zapDisputeAddress.length));
   const zapStakeFactory = new ethers.ContractFactory(
     abis.zapStakeAbi,
-    bytecodes.zapStakeByteCode,
+    linkedBytecode,
     signer,
   );
 

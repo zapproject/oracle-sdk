@@ -61,7 +61,7 @@ describe("ZapMaster", () => {
         console.log("zapDispute address: ", zapDispute.address);
         await zapDispute.deployed();
 
-        zapStake = await deployZapStake();
+        zapStake = await deployZapStake(zapDispute.address);
         console.log("zapStake address: ", zapStake.address);
         await zapStake.deployed();
 
@@ -69,11 +69,11 @@ describe("ZapMaster", () => {
         console.log("zapLibrary address: ", zapLibrary.address);
         await zapLibrary.deployed();
 
-        zap = await deployZap(token.address);
+        zap = await deployZap(token.address, zapDispute.address, zapStake.address, zapLibrary.address);
         console.log("zap address: ", zap.address);
         await zap.deployed();
 
-        zapMaster = await deployZapMaster(zap.address, token.address);
+        zapMaster = await deployZapMaster(zap.address, token.address, zapStake.address);
         console.log("zapMaster address: ", zapMaster.address);
         await zapMaster.deployed();
 
