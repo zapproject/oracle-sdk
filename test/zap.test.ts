@@ -1,4 +1,4 @@
-import chai, { expect } from "chai";
+import chai, { expect, should } from "chai";
 import chaiAsPromised from "chai-as-promised";
 import { BigNumber, Contract, ethers, Signer } from "ethers";
 import {
@@ -97,6 +97,22 @@ describe("ZapMaster", () => {
         it("should deploy ZapMaster", async () => {
             expect(zapMaster).to.exist;
         });
+    })
+
+    describe("Staking", () => {
+        it("Revert if balance does not equal 500K ZAP", async() => {
+            await zap.depositStake().should.be.rejectedWith("VM Exception while processing transaction: revert");
+        })
+
+        it("Should return a staked status of 1 for a balance greater than 500K", async () => {
+            const signerAddress = await signer.getAddress();
+            const startBal = await token.balanceOf(signerAddress);
+            await token.allocate(signerAddress, "10000000000000000000000000");
+            const balance = await token.balanceOf(signerAddress);
+            console.log(`Start balance: ${startBal}`);
+            console.log(`balance: ${balance}`);
+            expect(balance).to.equal("10000000000000000000000000");
+        })
     })
 });
 
