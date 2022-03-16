@@ -1,6 +1,7 @@
 import {
   zapAddresses,
   zapMasterAddresses,
+  zapTokenAddresses,
 } from "./contract/addresses";
 import { DecimalValue, BidShares, MediaData, Ask, Bid } from "./types";
 import invariant from "tiny-invariant";
@@ -20,6 +21,8 @@ let zapAddress: string;
 
 let zapMasterAddress: string;
 
+let zapToken: string;
+
 /**
  * Returns the MediaFactory, ZapMarket, and ZapMedia contract addresses depending on the networkId.
  * @param {string} networkId- The numeric value that routes to a blockchain network.
@@ -28,45 +31,55 @@ export const contractAddresses = (networkId: number): any => {
   if (networkId === 1337) {
     zapAddress = zapAddresses["1337"];
     zapMasterAddress = zapMasterAddresses["1337"];
+    zapToken = zapTokenAddresses["1337"];
 
     return {
       zapAddress,
       zapMasterAddress,
+      zapToken,
     };
   } else if (networkId === 4) {
     zapAddress = zapAddresses["4"];
     zapMasterAddress = zapMasterAddresses["4"];
+    zapToken = zapTokenAddresses["4"];
 
     return {
       zapAddress,
       zapMasterAddress,
+      zapToken,
     };
   } else if (networkId === 97) {
     zapAddress = zapAddresses["97"];
     zapMasterAddress = zapMasterAddresses["97"];
+    zapToken = zapTokenAddresses["97"];
 
 
     return {
       zapAddress,
       zapMasterAddress,
+      zapToken,
     };
   } else if (networkId === 1) {
     zapAddress = zapAddresses["1"];
     zapMasterAddress = zapMasterAddresses["1"];
+    zapToken = zapTokenAddresses["1"];
 
 
     return {
       zapAddress,
       zapMasterAddress,
+      zapToken,
     };
   } else if (networkId === 56) {
     zapAddress = zapAddresses["56"];
     zapMasterAddress = zapMasterAddresses["56"];
+    zapToken = zapTokenAddresses["56"];
 
 
     return {
       zapAddress,
       zapMasterAddress,
+      zapToken,
     };
   } else {
     invariant(false, "Constructor: Network Id is not supported.");

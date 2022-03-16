@@ -23,7 +23,7 @@ import {
     vaultAddresses
 } from "../src/contract/addresses";
 
-import ZapMaster from "../src/zapMaster"
+import Zap from "../src/zap"
 
 import { getSigners } from "./test_utils";
 import { SuiteConstants } from "mocha";
@@ -99,19 +99,24 @@ describe("ZapMaster", () => {
         });
     })
 
-    describe("Staking", () => {
+    describe.only("Staking", () => {
         it("Revert if balance does not equal 500K ZAP", async() => {
-            await zap.depositStake().should.be.rejectedWith("VM Exception while processing transaction: revert");
+            const zapClass = new Zap(1337, signers[1]);
+            await zapClass.stake().should.be.rejectedWith("VM Exception while processing transaction: revert");
         })
 
-        it("Should return a staked status of 1 for a balance greater than 500K", async () => {
-            const signerAddress = await signer.getAddress();
-            const startBal = await token.balanceOf(signerAddress);
+        it.only("Should return a staked status of 1 for a balance greater than 500K", async () => {
+            const signerAddress = await signers[1].getAddress();
             await token.allocate(signerAddress, "10000000000000000000000000");
-            const balance = await token.balanceOf(signerAddress);
-            console.log(`Start balance: ${startBal}`);
-            console.log(`balance: ${balance}`);
-            expect(balance).to.equal("10000000000000000000000000");
+            
+            const zapClass = new Zap(1337, signers[1]);
+            await zapClass.approveSpending(500000);
+            const allowance = await token.allowance(signerAddress, zap.address);
+            console.log(String(allowance));
+            await zapClass.stake()
+            const stakerInfo = await zapMaster.getStakerInfo(signerAddress);
+            // console.log(stakerInfo);
+            expect(stakerInfo[0]).to.equal(1);
         })
     })
 });

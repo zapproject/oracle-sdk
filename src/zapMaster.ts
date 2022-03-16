@@ -18,9 +18,6 @@ class ZapMaster {
         );
     }
 
-    public async stake(){
-        return this.zapMaster.depositStake();
-    }
 }
 
 export default ZapMaster;
