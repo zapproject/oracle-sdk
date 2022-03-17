@@ -15,8 +15,11 @@ class Zap {
             contractAddresses(chainId).zapAddress,
             zapAbi,
             this.signer,
-        );
+        ).attach(contractAddresses(this.chainId).zapMasterAddress);
+        
     }
+
+    // mine, stake request, stake withdraw
 
     public approveSpending = async (value: number) => {
         const tokenInstance = new Contract(
@@ -26,11 +29,19 @@ class Zap {
         );
         const wei = ethers.utils.parseEther(value.toString());
         const weiString = wei.toString();
-        return tokenInstance.approve(this.zap.address, weiString);
+        return tokenInstance.approve(contractAddresses(this.chainId).zapMasterAddress, weiString);
     }
 
     public stake = async () => {
         return this.zap.depositStake();
+    }
+
+    public requestWithdraw = async () => {
+        return this.zap.requestStakingWithdraw();
+    }
+
+    public withdraw = async () => {
+        return this.zap.withdrawStake();
     }
 }
 

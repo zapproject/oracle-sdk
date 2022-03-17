@@ -33,7 +33,7 @@ chai.use(chaiAsPromised);
 
 chai.should();
 
-describe("ZapMaster", () => {
+describe("Zap Class", () => {
     let signer : Signer;
     let zapVault : Contract;
     let zapMaster : Contract;
@@ -93,31 +93,147 @@ describe("ZapMaster", () => {
         vaultAddresses["1337"] = zapVault.address; 
     })
 
-    describe("Test Before Each", () => {
-        it("should deploy ZapMaster", async () => {
-            expect(zapMaster).to.exist;
-        });
-    })
-
-    describe.only("Staking", () => {
+    describe("Staking", () => {
         it("Revert if balance does not equal 500K ZAP", async() => {
             const zapClass = new Zap(1337, signers[1]);
             await zapClass.stake().should.be.rejectedWith("VM Exception while processing transaction: revert");
         })
 
-        it.only("Should return a staked status of 1 for a balance greater than 500K", async () => {
+        it("Should return a staked status of 1 for a balance greater than 500K", async () => {
             const signerAddress = await signers[1].getAddress();
             await token.allocate(signerAddress, "10000000000000000000000000");
-            
+
             const zapClass = new Zap(1337, signers[1]);
             await zapClass.approveSpending(500000);
-            const allowance = await token.allowance(signerAddress, zap.address);
-            console.log(String(allowance));
-            await zapClass.stake()
+
+            const tx = await zapClass.stake();
+
             const stakerInfo = await zapMaster.getStakerInfo(signerAddress);
-            // console.log(stakerInfo);
-            expect(stakerInfo[0]).to.equal(1);
+
+            const balance = await token.balanceOf(signerAddress);
+            
+
+            expect(Number(stakerInfo[0])).to.equal(1);
+            expect(String(balance)).to.equal("9500000000000000000000000");
         })
+
+        it("Should revert staking if stake status is already 1", async () => {
+            const signerAddress = await signers[1].getAddress();
+            await token.allocate(signerAddress, "10000000000000000000000000");
+
+            const zapClass = new Zap(1337, signers[1]);
+            await zapClass.approveSpending(500000);
+
+            const tx = await zapClass.stake();
+
+            await zapClass.approveSpending(500000);
+
+            await zapClass.stake().should.be.rejectedWith("ZapStake: Staker is already staked");
+        })
+    })
+
+    describe("Withdraw", () => {
+        it("Should reject withdraw request if not staked", async () => {
+            const signerAddress = await signers[1].getAddress();
+            const zapClass = new Zap(1337, signers[1]);
+            await zapClass.requestWithdraw().should.be.rejectedWith("Miner is not staked");
+        })
+
+        it("Should accept withdraw request and set staker status to 2", async () => {
+            const signerAddress = await signers[1].getAddress();
+            await token.allocate(signerAddress, "10000000000000000000000000");
+
+            const zapClass = new Zap(1337, signers[1]);
+            await zapClass.approveSpending(500000);
+
+            await zapClass.stake();
+
+            await zapClass.requestWithdraw();
+
+            const stakerInfo = await zapMaster.getStakerInfo(signerAddress);
+
+            expect(Number(stakerInfo[0])).to.equal(2);
+
+        })
+
+        it("Should reject withdraw if status is not 2", async () => {
+            const signerAddress = await signers[1].getAddress();
+            await token.allocate(signerAddress, "10000000000000000000000000");
+
+            const zapClass = new Zap(1337, signers[1]);
+            await zapClass.approveSpending(500000);
+
+            await zapClass.stake();
+
+            await provider.send("evm_increaseTime", [691200]);
+
+            await zapClass.withdraw().should.be.rejectedWith("Required to request withdraw of stake");
+        })
+
+        it("Should not withdraw if time has not been 7 days since request", async () => {
+            const signerAddress = await signers[1].getAddress();
+            await token.allocate(signerAddress, "10000000000000000000000000");
+
+            const zapClass = new Zap(1337, signers[1]);
+            await zapClass.approveSpending(500000);
+
+            await zapClass.stake()
+
+            await zapClass.requestWithdraw();
+
+            await zapClass.withdraw().should.be.rejectedWith("Need to wait at LEAST 7 days from stake start date");
+        })
+
+        it("Should withdraw if time has been 7 days since request", async () => {
+            const signerAddress = await signers[1].getAddress();
+            await token.allocate(signerAddress, "10000000000000000000000000");
+
+            const zapClass = new Zap(1337, signers[1]);
+            await zapClass.approveSpending(500000);
+
+            await zapClass.stake()
+
+            await zapClass.requestWithdraw();
+
+            await provider.send("evm_increaseTime", [691200]);
+
+            await zapClass.withdraw()
+
+            const stakerInfo = await zapMaster.getStakerInfo(signerAddress);
+
+            expect(Number(stakerInfo[0])).to.equal(0);
+            const balance = await token.balanceOf(signerAddress);
+            expect(String(balance)).to.equal("10000000000000000000000000");
+
+        })
+
+        it("Should allow restaking after a withdraw", async () => {
+            const signerAddress = await signers[1].getAddress();
+            await token.allocate(signerAddress, "10000000000000000000000000");
+
+            const zapClass = new Zap(1337, signers[1]);
+            await zapClass.approveSpending(500000);
+
+            await zapClass.stake()
+
+            await zapClass.requestWithdraw();
+
+            await provider.send("evm_increaseTime", [691200]);
+
+            await zapClass.withdraw()
+
+            await zapClass.approveSpending(500000);
+
+            await zapClass.stake();
+
+            const stakerInfo = await zapMaster.getStakerInfo(signerAddress);
+
+            const balance = await token.balanceOf(signerAddress);
+
+            expect(Number(stakerInfo[0])).to.equal(1);
+            expect(String(balance)).to.equal("9500000000000000000000000");
+        })
+
     })
 });
 
