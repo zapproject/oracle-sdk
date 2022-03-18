@@ -43,6 +43,11 @@ class Zap {
     public withdraw = async () => {
         return this.zap.withdrawStake();
     }
+
+    public addTip = async (id: number, value: number) => {
+        const wei = ethers.utils.parseEther(value.toString());
+        return this.zap.addTip(id, String(wei));
+    }
 }
 
 export default Zap;
