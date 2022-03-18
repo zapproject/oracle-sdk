@@ -284,37 +284,107 @@ describe("Zap Class", () => {
       let balAfterAddTip = await zap
         .connect(signers[1])
         .balanceOf(signerAddress);
-      
-      expect(balAfterRequestData.sub(balAfterAddTip).toString()).to.equal("333");
+
+      expect(balAfterRequestData.sub(balAfterAddTip).toString()).to.equal(
+        "333000000000000000000"
+      );
     });
 
-    it("Reverts function if tip amount is greater than 1000", async () => {
-        const signerAddress = await signers[1].getAddress();
-        await token.allocate(signerAddress, "10000000000000000000000000");
-  
-        let orignalBal = await zap.connect(signers[1]).balanceOf(signerAddress);
-  
-        let symbol: string = "BTC/USD";
-        // Request string
-        const api: string =
-          "json(https://api.binance.com/api/v1/klines?symbol=BTCUSDT&interval=1d&limit=1).0.4";
-        await token.connect(signers[1]).approve(zap.address, 6000);
-        await zap.connect(signers[1]).requestData(api, symbol, 100000, 1000);
-  
-        let balAfterRequestData = await zap
-          .connect(signers[1])
-          .balanceOf(signerAddress);
-  
-        expect(orignalBal.sub(balAfterRequestData).toString()).to.equal("1000");
-  
-        const zapClass = new Zap(1337, signers[1]);
-  
-        await zapClass.approveSpending(500000);
+    it.skip("Reverts function if tip amount is greater than 1000", async () => {
+      const signerAddress = await signers[1].getAddress();
+      await token.allocate(signerAddress, "10000000000000000000000000");
 
-        // await zapClass.addTip(1, "10000000000000000000000000");
-  
-        await zapClass.addTip(1, 10000).should.be.rejectedWith("revert Tip cannot be greater than 1000 Zap Tokens");
+      let orignalBal = await zap.connect(signers[1]).balanceOf(signerAddress);
 
-    })
+      let symbol: string = "BTC/USD";
+      // Request string
+      const api: string =
+        "json(https://api.binance.com/api/v1/klines?symbol=BTCUSDT&interval=1d&limit=1).0.4";
+      await token.connect(signers[1]).approve(zap.address, 6000);
+      await zap.connect(signers[1]).requestData(api, symbol, 100000, 1000);
+
+      let balAfterRequestData = await zap
+        .connect(signers[1])
+        .balanceOf(signerAddress);
+
+      expect(orignalBal.sub(balAfterRequestData).toString()).to.equal("1000");
+
+      const zapClass = new Zap(1337, signers[1]);
+
+      await zapClass.approveSpending(500000);
+
+      // await zapClass.addTip(1, "10000000000000000000000000");
+
+      await zapClass
+        .addTip(1, 10000)
+        .should.be.rejectedWith(
+          "revert Tip cannot be greater than 1000 Zap Tokens"
+        );
+    });
+  });
+
+  describe.only("Dispute", async () => {
+      beforeEach(async () => {
+        for (let i = 1; i <= 5; i++) {
+            const _address = await signers[i].getAddress();
+            await token.allocate(_address, "1100000000000000000000000");
+            const zapClass = new Zap(1337, signers[i]);
+            await zapClass.approveSpending(500000);
+            await zapClass.stake();
+            expect(String(await zapMaster.balanceOf(_address))).to.equal(
+              "600000000000000000000000"
+            );
+            expect(String(await zapMaster.balanceOf(zapVault.address))).to.equal(
+              `${5 * i}00000000000000000000000`
+            );
+          }
+    
+          await token.allocate(
+            await signers[6].getAddress(),
+            "500000000000000000000"
+          );
+          
+          let symbol: string = "BTC/USD";
+          // Request string
+          const api: string =
+            "json(https://api.binance.com/api/v1/klines?symbol=BTCUSDT&interval=1d&limit=1).0.4";
+          await token.connect(signers[1]).approve(zap.address, 6000);
+          await zap.connect(signers[1]).requestData(api, symbol, 100000, 52);
+
+          for (var i = 1; i <= 5; i++) {
+            const _address = await signers[i].getAddress();
+            console.log(`Miner ${i}`)
+            const status = await zapMaster.getStakerInfo(_address)
+            console.log(status[0].toString())
+            // Connects address 1 as the signer
+            zap = zap.connect(signers[i]);
+            console.log(zap.signer === signers[i])
+            /*
+              Gets the data properties for the current request
+              bytes32 _challenge,
+              uint256[5] memory _requestIds,
+              uint256 _difficutly,
+              uint256 _tip
+            */
+            const newCurrentVars: any = await zap.getNewCurrentVariables();
+      
+            // Each Miner will submit a mining solution
+            const mining = await zap.submitMiningSolution('nonce', 1, 1200);
+            // Checks if the miners mined the challenge
+            // true = Miner did mine the challenge
+            // false = Miner did not mine the challenge
+            const didMineStatus: boolean = await zapMaster.didMine(
+              newCurrentVars[0],
+              _address
+            );
+            expect(didMineStatus).to.be.true;
+          }
+      })
+    it("should run a test", async () => {
+      expect("1").to.equal("1");
+      expect(String(await zapMaster.balanceOf(zapVault.address))).to.equal(
+        `${25}00000000000000000000000`
+      );
+    });
   });
 });

@@ -1,4 +1,4 @@
-import { Contract, ethers, Signer } from "ethers";
+import { BigNumber, Contract, ethers, Signer } from "ethers";
 import { zapAbi, zapTokenAbi } from "./contract/abi";
 import { contractAddresses } from "./utils";
 
@@ -47,6 +47,11 @@ class Zap {
     public addTip = async (id: number, value: number) => {
         const wei = ethers.utils.parseEther(value.toString());
         return this.zap.addTip(id, String(wei));
+    }
+
+    public dispute = async(_requesteId: number, _timestamp: string, _minerId: number) => {
+        const bnTime = ethers.BigNumber.from(_timestamp);
+        return this.zap.dispute(_requesteId, bnTime, _minerId);
     }
 }
 
