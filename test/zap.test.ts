@@ -27,6 +27,7 @@ import Zap from "../src/zap";
 
 import { getSigners } from "./test_utils";
 import { SuiteConstants } from "mocha";
+import { Address } from "ethereumjs-util";
 
 const provider = new ethers.providers.JsonRpcProvider("http://localhost:8545");
 chai.use(chaiAsPromised);
@@ -324,62 +325,70 @@ describe("Zap Class", () => {
   });
 
   describe.only("Dispute", async () => {
-      beforeEach(async () => {
-        for (let i = 1; i <= 5; i++) {
-            const _address = await signers[i].getAddress();
-            await token.allocate(_address, "1100000000000000000000000");
-            const zapClass = new Zap(1337, signers[i]);
-            await zapClass.approveSpending(500000);
-            await zapClass.stake();
-            expect(String(await zapMaster.balanceOf(_address))).to.equal(
-              "600000000000000000000000"
-            );
-            expect(String(await zapMaster.balanceOf(zapVault.address))).to.equal(
-              `${5 * i}00000000000000000000000`
-            );
-          }
-    
-          await token.allocate(
-            await signers[6].getAddress(),
-            "500000000000000000000"
-          );
-          
-          let symbol: string = "BTC/USD";
-          // Request string
-          const api: string =
-            "json(https://api.binance.com/api/v1/klines?symbol=BTCUSDT&interval=1d&limit=1).0.4";
-          await token.connect(signers[1]).approve(zap.address, 6000);
-          await zap.connect(signers[1]).requestData(api, symbol, 100000, 52);
+    beforeEach(async () => {
+      for (let i = 1; i <= 5; i++) {
+        const _address = await signers[i].getAddress();
+        await token.allocate(_address, "1100000000000000000000000");
+        const zapClass = new Zap(1337, signers[i]);
+        await zapClass.approveSpending(500000);
+        await zapClass.stake();
+        expect(String(await zapMaster.balanceOf(_address))).to.equal(
+          "600000000000000000000000"
+        );
+        expect(String(await zapMaster.balanceOf(zapVault.address))).to.equal(
+          `${5 * i}00000000000000000000000`
+        );
+      }
 
-          for (var i = 1; i <= 5; i++) {
-            const _address = await signers[i].getAddress();
-            console.log(`Miner ${i}`)
-            const status = await zapMaster.getStakerInfo(_address)
-            console.log(status[0].toString())
-            // Connects address 1 as the signer
-            zap = zap.connect(signers[i]);
-            console.log(zap.signer === signers[i])
-            /*
+      await token.allocate(
+        await signers[6].getAddress(),
+        "500000000000000000000"
+      );
+
+      let symbol: string = "BTC/USD";
+      // Request string
+      const api: string =
+        "json(https://api.binance.com/api/v1/klines?symbol=BTCUSDT&interval=1d&limit=1).0.4";
+      const _zapClass = new Zap(1337, signers[1]);
+      await _zapClass.approveSpending(60000);
+      await _zapClass.zap.requestData(api, symbol, 100000, 52);
+
+      for (var i = 1; i <= 5; i++) {
+        const _address = await signers[i].getAddress();
+        console.log(`Miner ${i}: ${_address}`);
+        const status = await zapMaster.getStakerInfo(_address);
+        console.log(status[0].toString());
+        const zapClass = new Zap(1337, signers[i]);
+        await zapClass.approveSpending(500000);
+        // Connects address 1 as the signer
+        zap = zap.connect(signers[i]);
+        
+        /*
               Gets the data properties for the current request
               bytes32 _challenge,
               uint256[5] memory _requestIds,
               uint256 _difficutly,
               uint256 _tip
             */
-            const newCurrentVars: any = await zap.getNewCurrentVariables();
-      
-            // Each Miner will submit a mining solution
-            const mining = await zap.submitMiningSolution('nonce', 1, 1200);
-            // Checks if the miners mined the challenge
-            // true = Miner did mine the challenge
-            // false = Miner did not mine the challenge
-            const didMineStatus: boolean = await zapMaster.didMine(
-              newCurrentVars[0],
-              _address
-            );
-            expect(didMineStatus).to.be.true;
-          }
-      })
+        const newCurrentVars: any = await zapClass.zap.getNewCurrentVariables();
+
+        // Each Miner will submit a mining solution
+        const mining = await zapClass.zap.submitMiningSolution(
+          "nonce",
+          1,
+          1200
+        );
+
+        // Checks if the miners mined the challenge
+        // true = Miner did mine the challenge
+        // false = Miner did not mine the challenge
+        const didMineStatus: boolean = await zapMaster.didMine(
+          newCurrentVars[0],
+          _address
+        );
+        expect(didMineStatus).to.be.true;
+      }
+    });
     it("should run a test", async () => {
       expect("1").to.equal("1");
       expect(String(await zapMaster.balanceOf(zapVault.address))).to.equal(
