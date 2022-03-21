@@ -328,12 +328,15 @@ describe("Zap Class", () => {
     beforeEach(async () => {
       for (let i = 1; i <= 5; i++) {
         const _address = await signers[i].getAddress();
+        if(i === 5){
+            await token.allocate(_address, "10000000000000000000000000");
+        }
         await token.allocate(_address, "1100000000000000000000000");
         const zapClass = new Zap(1337, signers[i]);
         await zapClass.approveSpending(500000);
         await zapClass.stake();
         expect(String(await zapMaster.balanceOf(_address))).to.equal(
-          "600000000000000000000000"
+          i === 5? "10600000000000000000000000" : "600000000000000000000000"
         );
         expect(String(await zapMaster.balanceOf(zapVault.address))).to.equal(
           `${5 * i}00000000000000000000000`
@@ -359,7 +362,7 @@ describe("Zap Class", () => {
         const status = await zapMaster.getStakerInfo(_address);
         console.log(status[0].toString());
         const zapClass = new Zap(1337, signers[i]);
-        await zapClass.approveSpending(500000);
+        await zapClass.approveSpending(i === 5? 50000000 : 500000);
         // Connects address 1 as the signer
         zap = zap.connect(signers[i]);
         
@@ -373,6 +376,12 @@ describe("Zap Class", () => {
         const newCurrentVars: any = await zapClass.zap.getNewCurrentVariables();
 
         // Each Miner will submit a mining solution
+
+
+        const allowance = await token.allowance(signers[i].getAddress(), zapMaster.address);
+        const balance = await token.balanceOf(signers[i].getAddress());
+
+        console.log(` ${i} Allowance/Balance: ${allowance} : ${balance}`);
         const mining = await zapClass.zap.submitMiningSolution(
           "nonce",
           1,
