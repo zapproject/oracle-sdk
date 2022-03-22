@@ -291,7 +291,7 @@ describe("Zap Class", () => {
       );
     });
 
-    it.skip("Reverts function if tip amount is greater than 1000", async () => {
+    it("Reverts function if tip amount is greater than 1000", async () => {
       const signerAddress = await signers[1].getAddress();
       await token.allocate(signerAddress, "10000000000000000000000000");
 
@@ -315,9 +315,10 @@ describe("Zap Class", () => {
       await zapClass.approveSpending(500000);
 
       // await zapClass.addTip(1, "10000000000000000000000000");
-
+ 
       await zapClass
-        .addTip(1, 10000)
+      .addTip(1, 10001)
+        // .addTip(1, 10000)
         .should.be.rejectedWith(
           "revert Tip cannot be greater than 1000 Zap Tokens"
         );
