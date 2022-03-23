@@ -6,7 +6,7 @@ import { BigNumber, BytesLike, Wallet } from "ethers";
 import { hexDataLength, hexlify, isHexString } from "ethers/lib/utils";
 import invariant from "tiny-invariant";
 
-export function getSigners(provider: JsonRpcProvider, num = 10) {
+export function getSigners(provider: JsonRpcProvider, num = 20) {
   const signers: JsonRpcSigner[] = [];
   for (let i = 0; i < num; i++) {
     signers.push(provider.getSigner(i));
