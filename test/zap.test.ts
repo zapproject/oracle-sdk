@@ -24,6 +24,7 @@ import {
 } from "../src/contract/addresses";
 
 import Zap from "../src/zap";
+import Vault from "../src/vault";
 
 import { getSigners } from "./test_utils";
 import { SuiteConstants } from "mocha";
@@ -128,6 +129,13 @@ describe("Zap Class", () => {
 
       expect(Number(stakerInfo[0])).to.equal(1);
       expect(String(balance)).to.equal("9500000000000000000000000");
+
+      // the vault balance should be stake amount
+      const vaultClass = new Vault(1337, signers[1]);
+
+      const vaultBalance = await vaultClass.userBalance(signerAddress);
+
+      expect(String(vaultBalance)).to.equal("500000000000000000000000");
     });
 
     it("Should revert staking if stake status is already 1", async () => {
