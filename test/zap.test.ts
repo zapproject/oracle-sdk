@@ -505,12 +505,16 @@ describe("Zap Class", () => {
       const didVote = await zapMaster.didVote("1", await signers[6].getAddress());
       expect(didVote).to.be.false;
     })
-    it.only("Allow staked miners to vote", async () => {
-      const zapClass = new Zap(1337, signers[6]);
-      await zapClass.stake();
-      await zapClass.approveSpending(500000);
+    it("Shouldn't allow disputed miners to vote", async () => {
+      const zapClass = new Zap(1337, signers[5]);
       await zapClass.vote(1, true).should.be.rejectedWith("Only Stakers that are not under dispute can vote");
-      const didVote = await zapMaster.didVote("1", await signers[6].getAddress());
+      const didVote = await zapMaster.didVote("1", await signers[5].getAddress());
+      expect(didVote).to.be.false;
+    })
+    it("Allow staked miners to vote", async () => {
+      const zapClass = new Zap(1337, signers[2]);
+      await zapClass.vote(1, true)
+      const didVote = await zapMaster.didVote("1", await signers[2].getAddress());
       expect(didVote).to.be.true;
     })
   })
