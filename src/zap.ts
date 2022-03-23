@@ -49,9 +49,12 @@ class Zap {
         return this.zap.addTip(id, String(wei));
     }
 
-    public dispute = async(_requesteId: number, _timestamp: string, _minerId: number) => {
-        const bnTime = ethers.BigNumber.from(_timestamp);
-        return this.zap.dispute(_requesteId, bnTime, _minerId);
+    public dispute = async(_requesteId: string, _timestamp: string, _minerId: string) => {
+        return this.zap.beginDispute(_requesteId, _timestamp, _minerId);
+    }
+
+    public vote = async(disputId: number, vote: boolean) => {
+        return this.zap.vote(disputId, vote);
     }
 }
 
