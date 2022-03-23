@@ -912,13 +912,3 @@ async function getUintHash(key: string) {
 
   return _hash;
 }
-/* Error: processing response error (body="{\"id\":244,\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"VM Exception while processing transaction: revert Only stakers can begin a dispute\",\"code\":-32000,\"data\":{\"stack\":\"c: VM Exception while processing transaction: revert Only stakers can begin a dispute\\n    at Function.c.fromResults (/Users/coryflynn/.config/yarn/global/node_modules/ganache-cli/build/ganache-core.node.cli.js:4:192416)\\n    at e.exports (/Users/coryflynn/.config/yarn/global/node_modules/ganache-cli/build/ganache-core.node.cli.js:55:2089395)\",\"name\":\"c\"}}}", error={"code":-32000,"data":{"stack":"c: VM Exception while processing transaction: revert Only stakers can begin a dispute\n    at Function.c.fromResults (/Users/coryflynn/.config/yarn/global/node_modules/ganache-cli/build/ganache-core.node.cli.js:4:192416)\n    at e.exports (/Users/coryflynn/.config/yarn/global/node_modules/ganache-cli/build/ganache-core.node.cli.js:55:2089395)","name":"c"}}, requestBody="{\"method\":\"eth_estimateGas\",\"params\":[{\"from\":\"0x7e5f788b87251fe0ad934ae51d27f83bf78ccb25\",\"to\":\"0xbf2ee1384d13f540a1403b9aa86c53dd3efc2fbf\",\"data\":\"0x8581af19000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000623b73d00000000000000000000000000000000000000000000000000000000000000004\"}],\"id\":244,\"jsonrpc\":\"2.0\"}", requestMethod="POST", url="http://localhost:8545", code=SERVER_ERROR, version=web/5.6.0)
-      at Logger.makeError (node_modules/@ethersproject/logger/src.ts/index.ts:261:28)
-      at Logger.throwError (node_modules/@ethersproject/logger/src.ts/index.ts:273:20)
-      at /Users/coryflynn/Desktop/BlockchainCenter/oracle-sdk/node_modules/@ethersproject/web/src.ts/index.ts:329:28
-      at step (node_modules/@ethersproject/web/lib/index.js:33:23)
-      at Object.next (node_modules/@ethersproject/web/lib/index.js:14:53)
-      at fulfilled (node_modules/@ethersproject/web/lib/index.js:5:58)
-      at processTicksAndRejections (node:internal/process/task_queues:96:5)
- */
-
