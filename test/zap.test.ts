@@ -647,7 +647,23 @@ describe("Zap Class", () => {
       expect(disp[2]).to.be.false;
     });
 
-    it.only("'Should revert when calling tallyVote() as non staked.'", async () => {
+    it("'Should revert when calling tallyVote() if not 7 days.'", async () => {
+      for (let i = 6; i <= 12; i++) {
+        const zapClass = new Zap(1337, signers[i]);
+        await zapClass.vote(1, i % 2 == 0);
+        const didVote = await zapMaster.didVote(
+          "1",
+          await signers[i].getAddress()
+        );
+        expect(didVote).to.be.true;
+      }
+
+      await provider.send("evm_increaseTime", [600]);
+
+      const nonStaked = new Zap(1337, signers[19]);
+      await nonStaked.tallyVotes(1).should.be.rejectedWith("Cannot vote at this time")
+    });
+    it.only("Should tally votes", async () => {
       for (let i = 6; i <= 12; i++) {
         const zapClass = new Zap(1337, signers[i]);
         await zapClass.vote(1, i % 2 == 0);
@@ -660,8 +676,20 @@ describe("Zap Class", () => {
 
       await provider.send("evm_increaseTime", [691200]);
 
-      const nonStaked = new Zap(1337, signers[16]);
-      await nonStaked.tallyVotes(1).should.be.rejectedWith("This sucks")
-    });
+      const nonStaked = new Zap(1337, signers[19]);
+      await nonStaked.tallyVotes(1)
+      
+      const disp = await zapMaster.getAllDisputeVars(1);
+
+      console.log(disp);
+
+            // expect voting to have ended
+            expect(disp[1]).to.be.true;
+
+            // expect dispute to have failed
+            expect(disp[2]).to.be.true;
+
+    })
+
   });
 });
