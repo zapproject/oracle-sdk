@@ -424,7 +424,7 @@ describe("Zap Class", () => {
 
       await token.allocate(
         await signers[6].getAddress(),
-        "500000000000000000000"
+        "500000000000000000000000"
       );
 
       let symbol: string = "BTC/USD";
@@ -499,11 +499,19 @@ describe("Zap Class", () => {
       expect(disputeCountNumber.toString()).to.equal("1");
 
     });
-    it.only("Only allow staked miners to vote", async () => {
+    it("Only allow staked miners to vote", async () => {
       const zapClass = new Zap(1337, signers[6]);
       await zapClass.vote(1, true).should.be.rejectedWith("Only Stakers that are not under dispute can vote");
       const didVote = await zapMaster.didVote("1", await signers[6].getAddress());
       expect(didVote).to.be.false;
+    })
+    it.only("Allow staked miners to vote", async () => {
+      const zapClass = new Zap(1337, signers[6]);
+      await zapClass.stake();
+      await zapClass.approveSpending(500000);
+      await zapClass.vote(1, true).should.be.rejectedWith("Only Stakers that are not under dispute can vote");
+      const didVote = await zapMaster.didVote("1", await signers[6].getAddress());
+      expect(didVote).to.be.true;
     })
   })
 
