@@ -535,7 +535,7 @@ describe("Zap Class", () => {
     let disputeId: BigNumber = await zapMaster.getUintVar(ddisputecount);
 
     disputeId = await zapMaster.getUintVar(ddisputecount);
-    let disp = await zapMaster.getAllDisputeVars(disputeId);
+    let disp = await zapMaster.getAllDisputeVars(String(disputeId));
 
     let reporting_miner_wallet_bal = await token.balanceOf(disp[5]);
 
@@ -571,7 +571,7 @@ describe("Zap Class", () => {
     // Increase the evm time by 8 days
     // A stake can not be withdrawn until 7 days passed
     await provider.send('evm_increaseTime', [691200]);
-    await zap.tallyVotes(disputeId);
+    await zapClass.tallyVotes(Number(String(disputeId)));
 
     disp = await zapMaster.getAllDisputeVars(disputeId);
 
@@ -583,7 +583,7 @@ describe("Zap Class", () => {
 
     blockNumber = await provider.getBlockNumber();
 
-    let reported_miner_wallet_bal = await zapMaster.balanceOf(disp[3]);
+    let winner_miner_wallet_bal = await zapMaster.balanceOf(disp[3]);
     
     reporting_miner_wallet_bal = await zapMaster.balanceOf(disp[4]);
 
@@ -597,15 +597,18 @@ describe("Zap Class", () => {
     // let zMBal = await zap.getBalanceAt(zapMaster.address, blockNumber);
     let zMBal2 = await zapMaster.balanceOf(zapMaster.address);
 
+
+    /// 
+
     // expect balance of winner's wallet to be 1087500: 600k(leftover bal. after staking) + 487500 disputeFee
-    expect(String(reported_miner_wallet_bal)).to.equal(String("600000000000000000000000"));
+    expect(String(winner_miner_wallet_bal)).to.equal(String("11087500000000000000000000"));
 
      // 0, since disputer's balance was exactly disputeFee
     expect(String(reporting_miner_wallet_bal)).to.equal(String("0"));
 
-    expect(reportingVBal).to.equal(finalReportingVBal);
+    expect(String(reportingVBal)).to.equal(String(finalReportingVBal));
 
-    expect(initReportedVBal.add(disputeFee)).to.equal(finalReportedVBal);
+    expect(String(initReportedVBal.add(disputeFee))).to.equal(String(finalReportedVBal));
   });
 });
 
