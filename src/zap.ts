@@ -56,6 +56,10 @@ class Zap {
     public vote = async(disputId: number, vote: boolean) => {
         return this.zap.vote(disputId, vote);
     }
+
+    public tallyVotes = async(disputId: number) => {
+        return this.zap.tallyVotes(disputId);
+    }
 }
 
 export default Zap;

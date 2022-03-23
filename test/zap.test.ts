@@ -315,9 +315,9 @@ describe("Zap Class", () => {
       await zapClass.approveSpending(500000);
 
       // await zapClass.addTip(1, "10000000000000000000000000");
- 
+
       await zapClass
-      .addTip(1, 10001)
+        .addTip(1, 10001)
         // .addTip(1, 10000)
         .should.be.rejectedWith(
           "revert Tip cannot be greater than 1000 Zap Tokens"
@@ -330,15 +330,15 @@ describe("Zap Class", () => {
       await token.allocate(zapMaster.address, "10000000000000000000000000");
       for (let i = 1; i <= 5; i++) {
         const _address = await signers[i].getAddress();
-        if(i === 5){
-            await token.allocate(_address, "10000000000000000000000000");
+        if (i === 5) {
+          await token.allocate(_address, "10000000000000000000000000");
         }
         await token.allocate(_address, "1100000000000000000000000");
         const zapClass = new Zap(1337, signers[i]);
         await zapClass.approveSpending(500000);
         await zapClass.stake();
         expect(String(await zapMaster.balanceOf(_address))).to.equal(
-          i === 5? "10600000000000000000000000" : "600000000000000000000000"
+          i === 5 ? "10600000000000000000000000" : "600000000000000000000000"
         );
         expect(String(await zapMaster.balanceOf(zapVault.address))).to.equal(
           `${5 * i}00000000000000000000000`
@@ -364,10 +364,10 @@ describe("Zap Class", () => {
         const status = await zapMaster.getStakerInfo(_address);
         console.log(status[0].toString());
         const zapClass = new Zap(1337, signers[i]);
-        await zapClass.approveSpending(i === 5? 50000000 : 500000);
+        await zapClass.approveSpending(i === 5 ? 50000000 : 500000);
         // Connects address 1 as the signer
         zap = zap.connect(signers[i]);
-        
+
         /*
               Gets the data properties for the current request
               bytes32 _challenge,
@@ -402,20 +402,20 @@ describe("Zap Class", () => {
     });
   });
 
-  describe.only("Voting", async() => {
+  describe("Voting", async () => {
     beforeEach(async () => {
       await token.allocate(zapMaster.address, "10000000000000000000000000");
       for (let i = 1; i <= 5; i++) {
         const _address = await signers[i].getAddress();
-        if(i === 5){
-            await token.allocate(_address, "10000000000000000000000000");
+        if (i === 5) {
+          await token.allocate(_address, "10000000000000000000000000");
         }
         await token.allocate(_address, "1100000000000000000000000");
         const zapClass = new Zap(1337, signers[i]);
         await zapClass.approveSpending(500000);
         await zapClass.stake();
         expect(String(await zapMaster.balanceOf(_address))).to.equal(
-          i === 5? "10600000000000000000000000" : "600000000000000000000000"
+          i === 5 ? "10600000000000000000000000" : "600000000000000000000000"
         );
         expect(String(await zapMaster.balanceOf(zapVault.address))).to.equal(
           `${5 * i}00000000000000000000000`
@@ -438,10 +438,10 @@ describe("Zap Class", () => {
       for (var i = 1; i <= 5; i++) {
         const _address = await signers[i].getAddress();
         const zapClass = new Zap(1337, signers[i]);
-        await zapClass.approveSpending(i === 5? 50000000 : 500000);
+        await zapClass.approveSpending(i === 5 ? 50000000 : 500000);
         // Connects address 1 as the signer
         zap = zap.connect(signers[i]);
-        
+
         /*
               Gets the data properties for the current request
               bytes32 _challenge,
@@ -468,55 +468,200 @@ describe("Zap Class", () => {
         expect(didMineStatus).to.be.true;
       }
 
-      const timeOfLastNewValueBytes: Uint8Array = ethers.utils.toUtf8Bytes(
-        'timeOfLastNewValue'
-      );
-  
+      const timeOfLastNewValueBytes: Uint8Array =
+        ethers.utils.toUtf8Bytes("timeOfLastNewValue");
+
       // Converts the uintVar "stakeAmount" from a bytes array to a keccak256 hash
       const timeOfLastNewValueHash: string = ethers.utils.keccak256(
         timeOfLastNewValueBytes
       );
-  
+
       // Gets the the current stake amount
       let timeStamp: BigNumber = await zapMaster.getUintVar(
         timeOfLastNewValueHash
       );
-      
-      await token.connect(signers[1]).approve(zapMaster.address,"500000000000000000000000");
+
+      await token
+        .connect(signers[1])
+        .approve(zapMaster.address, "500000000000000000000000");
 
       const zapClass = new Zap(1337, signers[1]);
-      
+
       await zapClass.dispute("1", String(timeStamp), "4");
 
-      const disputeCount: Uint8Array = ethers.utils.toUtf8Bytes('disputeCount');
+      const disputeCount: Uint8Array = ethers.utils.toUtf8Bytes("disputeCount");
 
       // Convert to a keccak256 hash
       const ddisputecount: string = ethers.utils.keccak256(disputeCount);
-  
-      const disputeCountNumber = await zapMaster.getUintVar(ddisputecount);
-  
-  
-      expect(disputeCountNumber.toString()).to.equal("1");
 
+      const disputeCountNumber = await zapMaster.getUintVar(ddisputecount);
+
+      expect(disputeCountNumber.toString()).to.equal("1");
     });
     it("Only allow staked miners to vote", async () => {
       const zapClass = new Zap(1337, signers[6]);
-      await zapClass.vote(1, true).should.be.rejectedWith("Only Stakers that are not under dispute can vote");
-      const didVote = await zapMaster.didVote("1", await signers[6].getAddress());
+      await zapClass
+        .vote(1, true)
+        .should.be.rejectedWith(
+          "Only Stakers that are not under dispute can vote"
+        );
+      const didVote = await zapMaster.didVote(
+        "1",
+        await signers[6].getAddress()
+      );
       expect(didVote).to.be.false;
-    })
+    });
     it("Shouldn't allow disputed miners to vote", async () => {
       const zapClass = new Zap(1337, signers[5]);
-      await zapClass.vote(1, true).should.be.rejectedWith("Only Stakers that are not under dispute can vote");
-      const didVote = await zapMaster.didVote("1", await signers[5].getAddress());
+      await zapClass
+        .vote(1, true)
+        .should.be.rejectedWith(
+          "Only Stakers that are not under dispute can vote"
+        );
+      const didVote = await zapMaster.didVote(
+        "1",
+        await signers[5].getAddress()
+      );
       expect(didVote).to.be.false;
-    })
+    });
     it("Allow staked miners to vote", async () => {
       const zapClass = new Zap(1337, signers[2]);
-      await zapClass.vote(1, true)
-      const didVote = await zapMaster.didVote("1", await signers[2].getAddress());
+      await zapClass.vote(1, true);
+      const didVote = await zapMaster.didVote(
+        "1",
+        await signers[2].getAddress()
+      );
       expect(didVote).to.be.true;
-    })
-  })
+    });
+  });
 
+  describe.only("Tally Votes", async function () {
+    this.timeout(200000);
+    beforeEach(async () => {
+      await token.allocate(zapMaster.address, "10000000000000000000000000");
+      for (let i = 1; i <= 15; i++) {
+        const _address = await signers[i].getAddress();
+        await token.allocate(_address, "1100000000000000000000000");
+        const zapClass = new Zap(1337, signers[i]);
+        await zapClass.approveSpending(500000);
+        await zapClass.stake();
+        expect(String(await zapMaster.balanceOf(_address))).to.equal(
+          "600000000000000000000000"
+        );
+        expect(String(await zapMaster.balanceOf(zapVault.address))).to.equal(
+          `${5 * i}00000000000000000000000`
+        );
+      }
+
+      let symbol: string = "BTC/USD";
+      // Request string
+      const api: string =
+        "json(https://api.binance.com/api/v1/klines?symbol=BTCUSDT&interval=1d&limit=1).0.4";
+      const _zapClass = new Zap(1337, signers[1]);
+      await _zapClass.approveSpending(60000);
+      await _zapClass.zap.requestData(api, symbol, 100000, 52);
+
+      for (var i = 1; i <= 5; i++) {
+        const _address = await signers[i].getAddress();
+        const zapClass = new Zap(1337, signers[i]);
+        await zapClass.approveSpending(i === 5 ? 50000000 : 500000);
+        // Connects address 1 as the signer
+        zap = zap.connect(signers[i]);
+
+        /*
+              Gets the data properties for the current request
+              bytes32 _challenge,
+              uint256[5] memory _requestIds,
+              uint256 _difficutly,
+              uint256 _tip
+            */
+        const newCurrentVars: any = await zapClass.zap.getNewCurrentVariables();
+
+        // Each Miner will submit a mining solution
+        const mining = await zapClass.zap.submitMiningSolution(
+          "nonce",
+          1,
+          1200
+        );
+
+        // Checks if the miners mined the challenge
+        // true = Miner did mine the challenge
+        // false = Miner did not mine the challenge
+        const didMineStatus: boolean = await zapMaster.didMine(
+          newCurrentVars[0],
+          _address
+        );
+        expect(didMineStatus).to.be.true;
+      }
+
+      const timeOfLastNewValueBytes: Uint8Array =
+        ethers.utils.toUtf8Bytes("timeOfLastNewValue");
+
+      // Converts the uintVar "stakeAmount" from a bytes array to a keccak256 hash
+      const timeOfLastNewValueHash: string = ethers.utils.keccak256(
+        timeOfLastNewValueBytes
+      );
+
+      // Gets the the current stake amount
+      let timeStamp: BigNumber = await zapMaster.getUintVar(
+        timeOfLastNewValueHash
+      );
+
+      await token
+        .connect(signers[1])
+        .approve(zapMaster.address, "500000000000000000000000");
+
+      const zapClass = new Zap(1337, signers[1]);
+
+      await zapClass.dispute("1", String(timeStamp), "4");
+
+      const disputeCount: Uint8Array = ethers.utils.toUtf8Bytes("disputeCount");
+
+      // Convert to a keccak256 hash
+      const ddisputecount: string = ethers.utils.keccak256(disputeCount);
+
+      const disputeCountNumber = await zapMaster.getUintVar(ddisputecount);
+
+      expect(disputeCountNumber.toString()).to.equal("1");
+    });
+
+    it("Should fail dispute if the number of voters are less than 10%", async () => {
+      const zapClass = new Zap(1337, signers[2]);
+      await zapClass.vote(1, true);
+      const didVote = await zapMaster.didVote(
+        "1",
+        await signers[2].getAddress()
+      );
+      expect(didVote).to.be.true;
+
+      await provider.send("evm_increaseTime", [691200]);
+
+      await zapClass.tallyVotes(1);
+
+      const disp = await zapMaster.getAllDisputeVars(1);
+
+      // expect voting to have ended
+      expect(disp[1]).to.be.true;
+
+      // expect dispute to have failed
+      expect(disp[2]).to.be.false;
+    });
+
+    it.only("'Should revert when calling tallyVote() as non staked.'", async () => {
+      for (let i = 6; i <= 12; i++) {
+        const zapClass = new Zap(1337, signers[i]);
+        await zapClass.vote(1, i % 2 == 0);
+        const didVote = await zapMaster.didVote(
+          "1",
+          await signers[i].getAddress()
+        );
+        expect(didVote).to.be.true;
+      }
+
+      await provider.send("evm_increaseTime", [691200]);
+
+      const nonStaked = new Zap(1337, signers[16]);
+      await nonStaked.tallyVotes(1).should.be.rejectedWith("This sucks")
+    });
+  });
 });
