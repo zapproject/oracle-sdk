@@ -1,16 +1,17 @@
 {
-  "name": "zap-oracle-sdk",
+  "name": "@zapproject/oracle-sdk",
   "version": "1.0.0",
   "description": "",
   "scripts": {
     "ganache": "ganache-cli --mnemonic 'ostrich mixture embrace quote comic until exchange rubber butter royal august stay' --accounts=20",
     "ganache-npx": "npx ganache-cli --mnemonic 'ostrich mixture embrace quote comic until exchange rubber butter royal august stay'",
-    "generate-types": "typechain --target=ethers-v5 'abi/*.json",
-    "postinstall": "yarn generate-types",
     "prepare": "yarn run build",
     "build": "tsc",
     "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register --timeout 100000 'test/**/*.ts'"
   },
+  "files": [
+    "dist"
+  ],
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -27,7 +28,6 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-prettier": "^4.0.0",
-    "ethereum-waffle": "^2.2.0",
     "mocha": "^9.1.3",
     "prettier": "^2.5.1",
     "ts-node": "^10.4.0",

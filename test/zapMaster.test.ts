@@ -37,7 +37,7 @@ chai.use(chaiAsPromised);
 
 chai.should();
 
-describe("ZapMaster Getters", () => {
+describe.only("ZapMaster", () => {
     let signer: Signer;
   let zapVault: Contract;
   let zapMaster: Contract;
@@ -128,7 +128,7 @@ describe("ZapMaster Getters", () => {
           `${5 * i}00000000000000000000000`
         );
       }
-  }
+  };
 
   async function requestData() {
     await token.allocate(
@@ -143,6 +143,11 @@ describe("ZapMaster Getters", () => {
     const _zapClass = new Zap(1337, signers[1]);
     await _zapClass.approveSpending(60000);
     await _zapClass.zap.requestData(api, symbol, 100000, 52);
-  } 
+
+  };
   
-}) 
+  it("should", async () => {
+
+    console.log("done");
+  });
+});
