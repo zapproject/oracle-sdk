@@ -22,6 +22,31 @@ class ZapMaster {
         return this.zapMaster.balanceOf(_address);
     }
 
+    public getAllDisputeVars = async (disputeId: number) => {
+        return await this.zapMaster.getAllDisputeVars(disputeId)
+    }
+
+    public getCurrentVariables = () => {
+
+    }
+
+    public getDisputeIdByDisputeHash = () => {
+        
+    }
+
+    public getDisputeUintVars = () => {
+        
+    }
+
+    public getUintVar = async (key: string) => {
+        // Converts the uintVar "stakeAmount" to a bytes array
+        const _bytes: Uint8Array = ethers.utils.toUtf8Bytes(key);
+      
+        // Converts the uintVar "stakeAmount" from a bytes array to a keccak256 hash
+        const _hash: string = ethers.utils.keccak256(_bytes);
+
+        return await this.zapMaster.getUintVar(_hash)
+    }
     public getRequestIdByRequestQIndex = async (_index: BigNumberish) => {
         return this.zapMaster.getRequestIdByRequestQIndex(_index);
     }
@@ -46,12 +71,6 @@ class ZapMaster {
 
     public retrieveData = async (_requestId: BigNumberish, _timestamp: BigNumberish) => {
         return this.zapMaster.retrieveData(_requestId, _timestamp);
-    }
-
-    public getUintVar = async (_data: string) => {
-        let bytes = ethers.utils.toUtf8Bytes(_data);
-        let data = ethers.utils.keccak256(bytes);
-        return this.zapMaster.getUintVar(data);
     }
 }
 
