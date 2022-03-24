@@ -104,4 +104,6 @@ describe("ZapMaster Getters", () => {
     zapDisputeAddresses["1337"] = zapDispute.address;
     vaultAddresses["1337"] = zapVault.address;
   });
+
+  
 }) 
