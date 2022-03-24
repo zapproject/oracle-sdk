@@ -1,4 +1,4 @@
-import { Contract, ethers, Signer } from "ethers";
+import { BigNumberish, Contract, ethers, Signer } from "ethers";
 import { zapMasterAbi } from "./contract/abi";
 import { contractAddresses } from "./utils";
 
@@ -43,6 +43,10 @@ class ZapMaster {
 
         return await this.zapMaster.getUintVar(_hash)
     }
+    public getRequestIdByRequestQIndex = async (_index: BigNumberish) => {
+        return this.zapMaster.getRequestIdByRequestQIndex(_index);
+    }
+
 
 }
 

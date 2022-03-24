@@ -28,6 +28,7 @@ import { getSigners } from "./test_utils";
 import { SuiteConstants } from "mocha";
 import { Address } from "ethereumjs-util";
 
+import Zap from "../src/zap";
 import Vault from "../src/vault";
 import ZapMaster from "../src/zapMaster";
 
@@ -35,6 +36,8 @@ const provider = new ethers.providers.JsonRpcProvider("http://localhost:8545");
 chai.use(chaiAsPromised);
 
 chai.should();
+
+
 
 describe.only("ZapMaster", () => {
   let signer: Signer;
@@ -48,6 +51,42 @@ describe.only("ZapMaster", () => {
   let zap: Contract;
 
   const signers = getSigners(provider);
+
+  async function stake() {
+    await token.allocate(zapMaster.address, "10000000000000000000000000");
+      for (let i = 1; i <= 5; i++) {
+        const _address = await signers[i].getAddress();
+        if (i === 5) {
+          await token.allocate(_address, "10000000000000000000000000");
+        }
+        await token.allocate(_address, "1100000000000000000000000");
+        const zapClass = new Zap(1337, signers[i]);
+        await zapClass.approveSpending(500000);
+        await zapClass.stake();
+        expect(String(await zapMaster.balanceOf(_address))).to.equal(
+          i === 5 ? "10600000000000000000000000" : "600000000000000000000000"
+        );
+        expect(String(await zapMaster.balanceOf(zapVault.address))).to.equal(
+          `${5 * i}00000000000000000000000`
+        );
+      }
+  }
+
+  async function requestData() {
+    await token.allocate(
+      await signers[6].getAddress(),
+      "500000000000000000000"
+    );
+
+    let symbol: string = "BTC/USD";
+    // Request string
+    const api: string =
+      "json(https://api.binance.com/api/v1/klines?symbol=BTCUSDT&interval=1d&limit=1).0.4";
+    const _zapClass = new Zap(1337, signers[1]);
+    await _zapClass.approveSpending(60000);
+    await _zapClass.zap.requestData(api, symbol, 100000, 52);
+  } 
+
 
   beforeEach(async () => {
     signer = signers[0];
@@ -103,6 +142,10 @@ describe.only("ZapMaster", () => {
     zapStakeAddresses["1337"] = zapStake.address;
     zapDisputeAddresses["1337"] = zapDispute.address;
     vaultAddresses["1337"] = zapVault.address;
+
+    stake();
+
+    requestData();
   });
 
   describe("Should retrieve all the getters for Disputed values", async function() {
