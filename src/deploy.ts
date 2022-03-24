@@ -97,7 +97,6 @@ export const deployZapDispute = async () => {
 
 export const deployZapStake = async (_zapDisputeAddress: string) => {
   const linkedBytecode = bytecodes.zapStakeByteCode.replaceAll(disputeCode, _zapDisputeAddress.slice(2, _zapDisputeAddress.length).toLowerCase());
-  console.log( _zapDisputeAddress.slice(2, _zapDisputeAddress.length).toLowerCase())
   // zapStakeByteCode.replaceAll(disputeCode, _zapDisputeAddress.slice(2, _zapDisputeAddress.length));
   const zapStakeFactory = new ethers.ContractFactory(
     abis.zapStakeAbi,

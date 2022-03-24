@@ -82,7 +82,6 @@ describe.only("ZapMaster", () => {
       token.address,
       zapStake.address
     );
-    console.log("ZM address: ", zapMasterDeployed.address);
     await zapMasterDeployed.deployed();
 
     zapVault = await deployVault(zapMasterDeployed.address, token.address);
@@ -101,15 +100,15 @@ describe.only("ZapMaster", () => {
 
     zapMaster = new ZapMaster(1337, signers[1]);
 
-    await stake();
+    await stake(zapMasterDeployed);
 
     await requestData();
 
   });
 
-  async function stake() {
-
+  async function stake(zapMasterC: Contract) {
     await token.allocate(zapMasterAddresses[1337], "10000000000000000000000000");
+
     for (let i = 1; i <= 5; i++) {
       const _address = await signers[i].getAddress();
       if (i === 5) {
@@ -125,6 +124,9 @@ describe.only("ZapMaster", () => {
       expect(String(await zapMaster.balanceOf(zapVault.address))).to.equal(
         `${5 * i}00000000000000000000000`
       );
+
+      let staked = await zapMaster.getStakerInfo(await signers[i].getAddress());
+      expect(String(staked[0])).to.equal("1");
     }
   };
 
@@ -149,12 +151,14 @@ describe.only("ZapMaster", () => {
     await _zapClass.zap.requestData(api, symbol, 100000, 1);
   };
 
-  it("Should retrieve all the getters for Disputed values", async function() {
-    for (var i = 1; i <= 5; i++) {
+  it("Should retrieve all the getters for Disputed values", async () => {
+    for (var i = 1; i <= 5; i++) {      
       const _address = await signers[i].getAddress();
+
       token.connect(signers[i]).approve(zapMasterAddresses[1337], i === 5 ? "50000000000000000000000000" : "500000000000000000000000");
       // Connects address 1 as the signer
-      zap = zap.connect(signers[i]);
+      const zapClass = new Zap(1337, signers[i]);
+      // zap = zap.connect(signers[i]);
 
       /*
         Gets the data properties for the current request
@@ -163,10 +167,10 @@ describe.only("ZapMaster", () => {
         uint256 _difficutly,
         uint256 _tip
       */
-      const newCurrentVars: any = await zap.getNewCurrentVariables();
+      const newCurrentVars: any = await zapClass.zap.getNewCurrentVariables();
 
       // Each Miner will submit a mining solution
-      const mining = await zap.submitMiningSolution(
+      const mining = await zapClass.zap.submitMiningSolution(
         "nonce",
         1,
         1200
@@ -175,46 +179,36 @@ describe.only("ZapMaster", () => {
       // Checks if the miners mined the challenge
       // true = Miner did mine the challenge
       // false = Miner did not mine the challenge
-      const didMineStatus: boolean = await zapMasterDeployed.didMine(
+      const zmClass = new ZapMaster(1337, signers[1]);
+      const didMineStatus: boolean = await zmClass.zapMaster.didMine(
         newCurrentVars[0],
         _address
       );
       expect(didMineStatus).to.be.true;
     }
 
-    const timeOfLastNewValueBytes: Uint8Array =
-      ethers.utils.toUtf8Bytes("timeOfLastNewValue");
-
-    // Converts the uintVar "stakeAmount" from a bytes array to a keccak256 hash
-    const timeOfLastNewValueHash: string = ethers.utils.keccak256(
-      timeOfLastNewValueBytes
-    );
-
     // Gets the the current stake amount
-    let timeStamp: BigNumber = await zapMaster.getUintVar(
-      timeOfLastNewValueHash
-    );
+    let timeStamp: BigNumber = await zapMaster.getUintVar("timeOfLastNewValue");
+
+    let disputeFee = await zapMaster.getUintVar("disputeFee");
+
+    expect(Number(await token.balanceOf(signers[1].getAddress()))).to.be.greaterThanOrEqual(Number(disputeFee));
 
     await token
       .connect(signers[1])
-      .approve(zapMasterAddresses[1337], "500000000000000000000000");
+      .approve(zapMasterAddresses[1337], disputeFee);
 
-    // const zapClass = new Zap(1337, signers[1]);
+    const zapClass = new Zap(1337, signers[1]);
 
-    await zap.connect(signers[1]).beginDispute("1", String(timeStamp), "4");
+    await zapClass.dispute("1", String(timeStamp), "4");
 
-    const disputeCount: Uint8Array = ethers.utils.toUtf8Bytes("disputeCount");
-
-    // Convert to a keccak256 hash
-    const ddisputecount: string = ethers.utils.keccak256(disputeCount);
-
-    const disputeCountNumber = await zapMaster.getUintVar(ddisputecount);
+    const disputeCountNumber = await zapMaster.getUintVar("disputeCount");
 
     expect(disputeCountNumber.toString()).to.equal("1");
   });
 
 
-  it.only("Should get all request data getters", async () => {
+  it("Should get all request data getters", async () => {
     let requestGran = await zapMaster.getRequestUintVars(1, "granularity");
     expect(String(requestGran)).to.equal("100000");
 

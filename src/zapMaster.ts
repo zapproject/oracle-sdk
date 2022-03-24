@@ -72,6 +72,10 @@ class ZapMaster {
     public retrieveData = async (_requestId: BigNumberish, _timestamp: BigNumberish) => {
         return this.zapMaster.retrieveData(_requestId, _timestamp);
     }
+
+    public getStakerInfo = async (_address: string) => {
+        return this.zapMaster.getStakerInfo(_address);
+    }
 }
 
 export default ZapMaster;
