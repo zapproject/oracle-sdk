@@ -18,6 +18,10 @@ class ZapMaster {
         );
     }
 
+    public balanceOf = async (_address: string) => {
+        return this.zapMaster.balanceOf(_address);
+    }
+
     public getRequestIdByRequestQIndex = async (_index: BigNumberish) => {
         return this.zapMaster.getRequestIdByRequestQIndex(_index);
     }
@@ -36,8 +40,18 @@ class ZapMaster {
         return this.zapMaster.getRequestVars(_requestId);
     }
 
+    public getTimestampbyRequestIDandIndex = async (_requestId: BigNumberish, _index: BigNumberish) => {
+        return this.zapMaster.getTimestampbyRequestIDandIndex(_requestId, _index);
+    }
+
     public retrieveData = async (_requestId: BigNumberish, _timestamp: BigNumberish) => {
         return this.zapMaster.retrieveData(_requestId, _timestamp);
+    }
+
+    public getUintVar = async (_data: string) => {
+        let bytes = ethers.utils.toUtf8Bytes(_data);
+        let data = ethers.utils.keccak256(bytes);
+        return this.zapMaster.getUintVar(data);
     }
 }
 
