@@ -153,6 +153,36 @@ describe.only("ZapMaster", () => {
     await _zapClass.zap.requestData(api, symbol, 100000, 1);
   }
 
+  async function mine(){
+    for (var i = 1; i <= 5; i++) {
+      const _address = await signers[i].getAddress();
+
+      await token
+        .connect(signers[i])
+        .approve(
+          zapMasterAddresses[1337],
+          i === 5 ? "50000000000000000000000000" : "500000000000000000000000"
+        );
+
+      const zapClass = new Zap(1337, signers[i]);
+
+      const newCurrentVars: any = await zapClass.zap.getNewCurrentVariables();
+
+      const mining = await zapClass.zap.submitMiningSolution(
+        "nonce",
+        1,
+        1200
+      );
+
+      const zmClass = new ZapMaster(1337, signers[1]);
+      const didMineStatus: boolean = await zmClass.zapMaster.didMine(
+        newCurrentVars[0],
+        _address
+      );
+      expect(didMineStatus).to.be.true;
+    }
+  }
+
   it("Should get all request data getters", async () => {
     let requestGran = await zapMaster.getRequestUintVars(1, "granularity");
     expect(String(requestGran)).to.equal("100000");
@@ -169,6 +199,9 @@ describe.only("ZapMaster", () => {
 
     let requestQ = await zapMaster.getRequestQ();
     expect(String(requestQ[50])).to.equal("1");
+
+    let requestIdFromQ = await zapMaster.getRequestIdByRequestQIndex(50);
+    expect(String(requestIdFromQ)).to.equal("2");
 
     // let {api, symbol, hash, gran, qIndex, tip};
     let vars = await zapMaster.getRequestVars(1);
@@ -192,45 +225,7 @@ describe.only("ZapMaster", () => {
   describe("Should retrieve all the getters for Disputed values", async function() {
     this.timeout(400000)
     beforeEach(async () => {
-      for (var i = 1; i <= 5; i++) {
-        const _address = await signers[i].getAddress();
-
-        await token
-          .connect(signers[i])
-          .approve(
-            zapMasterAddresses[1337],
-            i === 5 ? "50000000000000000000000000" : "500000000000000000000000"
-          );
-        // Connects address 1 as the signer
-        const zapClass = new Zap(1337, signers[i]);
-        // zap = zap.connect(signers[i]);
-
-        /*
-          Gets the data properties for the current request
-          bytes32 _challenge,
-          uint256[5] memory _requestIds,
-          uint256 _difficutly,
-          uint256 _tip
-        */
-        const newCurrentVars: any = await zapClass.zap.getNewCurrentVariables();
-
-        // Each Miner will submit a mining solution
-        const mining = await zapClass.zap.submitMiningSolution(
-          "nonce",
-          1,
-          1200
-        );
-
-        // Checks if the miners mined the challenge
-        // true = Miner did mine the challenge
-        // false = Miner did not mine the challenge
-        const zmClass = new ZapMaster(1337, signers[1]);
-        const didMineStatus: boolean = await zmClass.zapMaster.didMine(
-          newCurrentVars[0],
-          _address
-        );
-        expect(didMineStatus).to.be.true;
-      }
+      await mine();
 
       // Gets the the current stake amount
       let timeStamp: BigNumber = await zapMaster.getUintVar(
@@ -291,4 +286,12 @@ describe.only("ZapMaster", () => {
     });
   });
 
+  it("Should get mining getters", async () => {
+    await mine();
+
+    let currentTimestamp = await zapMaster.getTimestampbyRequestIDandIndex(1, 0);
+    expect(String(currentTimestamp)).to.not.equal("0");
+
+
+  })
 });
