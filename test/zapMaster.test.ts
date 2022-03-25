@@ -282,7 +282,9 @@ describe.only("ZapMaster", () => {
     });
 
     it("Should not break", async () => {
-      expect(true).to.be.true;
+      const zapMasterClass = new ZapMaster(1337, signers[1]);
+      const timestamp = zapMasterClass.getTimestampbyRequestIDandIndex(1, 3);
+      console.log(timestamp)
     });
   });
 
