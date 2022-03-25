@@ -266,6 +266,9 @@ describe.only("ZapMaster", () => {
           const instance = new Zap(1337, signers[i]);
           await instance.approveSpending(500000);
           await instance.vote(1, true);
+
+          let voted = await zapMaster.didVote(1, await signers[i].getAddress());
+          expect(voted).to.equal(true);
         }
       }
 

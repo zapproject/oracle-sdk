@@ -27,10 +27,14 @@ class ZapMaster {
 
   public allowance = async (_user: string, _spender: string) => {
     return this.zapMaster.allowance(_user, _spender);
-  }
+  };
 
   public balanceOf = async (_address: string) => {
     return this.zapMaster.balanceOf(_address);
+  };
+
+  public didVote = async (_disputeId: BigNumberish, _address: string) => {
+    return this.zapMaster.didVote(_disputeId, _address);
   };
 
   public getAllDisputeVars = async (disputeId: BigNumberish) => {
