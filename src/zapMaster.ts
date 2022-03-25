@@ -26,10 +26,6 @@ class ZapMaster {
         return await this.zapMaster.getAllDisputeVars(disputeId)
     }
 
-    public getCurrentVariables = () => {
-
-    }
-
     public getDisputeIdByDisputeHash = () => {
         
     }
@@ -51,6 +47,11 @@ class ZapMaster {
 
         return await this.zapMaster.getUintVar(_hash)
     }
+
+    public getCurrentVariables = async () => {
+        return this.zapMaster.getCurrentVariables();
+    }
+
     public getRequestIdByRequestQIndex = async (_index: BigNumberish) => {
         return this.zapMaster.getRequestIdByRequestQIndex(_index);
     }

@@ -179,6 +179,14 @@ describe.only("ZapMaster", () => {
     expect(String(vars[3])).to.equal("100000");
     expect(String(vars[4])).to.equal("0");
     expect(String(vars[5])).to.equal("0");
+
+    let currentVar = await zapMaster.getCurrentVariables();
+    expect(String(currentVar[1])).to.equal("1");
+    expect(String(currentVar[2])).to.equal("1");
+    expect(String(currentVar[3])).to.equal(
+      "json(https://api.binance.com/api/v1/klines?symbol=BTCUSDT&interval=1d&limit=1).0.4"
+    );
+    expect(String(currentVar[4])).to.equal("100000");
   });
 
   describe("Should retrieve all the getters for Disputed values", async function() {
