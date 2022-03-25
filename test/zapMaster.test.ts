@@ -309,6 +309,9 @@ describe.only("ZapMaster", () => {
     let submissions = await zapMaster.getSubmissionsByTimestamp(1, currentTimestamp);
     expect(String(submissions[0])).to.equal("1200");
 
-    let nextVar = await zapMaster.getVariablesOnDeck();
+    // let nextVar = await zapMaster.getVariablesOnDeck();
+
+    let retrievedData = await zapMaster.retrieveData(1, currentTimestamp);
+    expect(String(retrievedData)).to.equal("1200");
   })
 });
