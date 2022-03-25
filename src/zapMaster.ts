@@ -38,6 +38,10 @@ class ZapMaster {
         
     }
 
+    public isInDispute = () => {
+
+    }
+
     public getUintVar = async (key: string) => {
         // Converts the uintVar "stakeAmount" to a bytes array
         const _bytes: Uint8Array = ethers.utils.toUtf8Bytes(key);

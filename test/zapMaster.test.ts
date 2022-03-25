@@ -103,11 +103,13 @@ describe.only("ZapMaster", () => {
     await stake(zapMasterDeployed);
 
     await requestData();
-
   });
 
   async function stake(zapMasterC: Contract) {
-    await token.allocate(zapMasterAddresses[1337], "10000000000000000000000000");
+    await token.allocate(
+      zapMasterAddresses[1337],
+      "10000000000000000000000000"
+    );
 
     for (let i = 1; i <= 5; i++) {
       const _address = await signers[i].getAddress();
@@ -128,7 +130,7 @@ describe.only("ZapMaster", () => {
       let staked = await zapMaster.getStakerInfo(await signers[i].getAddress());
       expect(String(staked[0])).to.equal("1");
     }
-  };
+  }
 
   async function requestData() {
     await token.allocate(
@@ -149,64 +151,7 @@ describe.only("ZapMaster", () => {
     api =
       "json(https://api.binance.com/api/v1/klines?symbol=ETHUSDT&interval=1d&limit=1).0.4";
     await _zapClass.zap.requestData(api, symbol, 100000, 1);
-  };
-
-  it("Should retrieve all the getters for Disputed values", async () => {
-    for (var i = 1; i <= 5; i++) {      
-      const _address = await signers[i].getAddress();
-
-      token.connect(signers[i]).approve(zapMasterAddresses[1337], i === 5 ? "50000000000000000000000000" : "500000000000000000000000");
-      // Connects address 1 as the signer
-      const zapClass = new Zap(1337, signers[i]);
-      // zap = zap.connect(signers[i]);
-
-      /*
-        Gets the data properties for the current request
-        bytes32 _challenge,
-        uint256[5] memory _requestIds,
-        uint256 _difficutly,
-        uint256 _tip
-      */
-      const newCurrentVars: any = await zapClass.zap.getNewCurrentVariables();
-
-      // Each Miner will submit a mining solution
-      const mining = await zapClass.zap.submitMiningSolution(
-        "nonce",
-        1,
-        1200
-      );
-
-      // Checks if the miners mined the challenge
-      // true = Miner did mine the challenge
-      // false = Miner did not mine the challenge
-      const zmClass = new ZapMaster(1337, signers[1]);
-      const didMineStatus: boolean = await zmClass.zapMaster.didMine(
-        newCurrentVars[0],
-        _address
-      );
-      expect(didMineStatus).to.be.true;
-    }
-
-    // Gets the the current stake amount
-    let timeStamp: BigNumber = await zapMaster.getUintVar("timeOfLastNewValue");
-
-    let disputeFee = await zapMaster.getUintVar("disputeFee");
-
-    expect(Number(await token.balanceOf(signers[1].getAddress()))).to.be.greaterThanOrEqual(Number(disputeFee));
-
-    await token
-      .connect(signers[1])
-      .approve(zapMasterAddresses[1337], disputeFee);
-
-    const zapClass = new Zap(1337, signers[1]);
-
-    await zapClass.dispute("1", String(timeStamp), "4");
-
-    const disputeCountNumber = await zapMaster.getUintVar("disputeCount");
-
-    expect(disputeCountNumber.toString()).to.equal("1");
-  });
-
+  }
 
   it("Should get all request data getters", async () => {
     let requestGran = await zapMaster.getRequestUintVars(1, "granularity");
@@ -214,7 +159,7 @@ describe.only("ZapMaster", () => {
 
     let totalTip = await zapMaster.getUintVar("currentTotalTips");
     expect(String(totalTip)).to.equal("10");
-    
+
     // the request's total tip is 0 because it's been transfer to on-deck as there is only one request and is now currentTotalTips
     let requestTotalTip = await zapMaster.getRequestUintVars(1, "totalTip");
     expect(String(requestTotalTip)).to.equal("0");
@@ -227,10 +172,115 @@ describe.only("ZapMaster", () => {
 
     // let {api, symbol, hash, gran, qIndex, tip};
     let vars = await zapMaster.getRequestVars(1);
-    expect(vars[0]).to.equal("json(https://api.binance.com/api/v1/klines?symbol=BTCUSDT&interval=1d&limit=1).0.4");
+    expect(vars[0]).to.equal(
+      "json(https://api.binance.com/api/v1/klines?symbol=BTCUSDT&interval=1d&limit=1).0.4"
+    );
     expect(vars[1]).to.equal("BTC/USDT");
     expect(String(vars[3])).to.equal("100000");
     expect(String(vars[4])).to.equal("0");
     expect(String(vars[5])).to.equal("0");
   });
+
+  describe("Should retrieve all the getters for Disputed values", async function() {
+    this.timeout(400000)
+    beforeEach(async () => {
+      for (var i = 1; i <= 5; i++) {
+        const _address = await signers[i].getAddress();
+
+        token
+          .connect(signers[i])
+          .approve(
+            zapMasterAddresses[1337],
+            i === 5 ? "50000000000000000000000000" : "500000000000000000000000"
+          );
+        // Connects address 1 as the signer
+        const zapClass = new Zap(1337, signers[i]);
+        // zap = zap.connect(signers[i]);
+
+        /*
+          Gets the data properties for the current request
+          bytes32 _challenge,
+          uint256[5] memory _requestIds,
+          uint256 _difficutly,
+          uint256 _tip
+        */
+        const newCurrentVars: any = await zapClass.zap.getNewCurrentVariables();
+
+        // Each Miner will submit a mining solution
+        const mining = await zapClass.zap.submitMiningSolution(
+          "nonce",
+          1,
+          1200
+        );
+
+        // Checks if the miners mined the challenge
+        // true = Miner did mine the challenge
+        // false = Miner did not mine the challenge
+        const zmClass = new ZapMaster(1337, signers[1]);
+        const didMineStatus: boolean = await zmClass.zapMaster.didMine(
+          newCurrentVars[0],
+          _address
+        );
+        expect(didMineStatus).to.be.true;
+      }
+
+      // Gets the the current stake amount
+      let timeStamp: BigNumber = await zapMaster.getUintVar(
+        "timeOfLastNewValue"
+      );
+
+      let disputeFee = await zapMaster.getUintVar("disputeFee");
+
+      expect(
+        Number(await token.balanceOf(signers[1].getAddress()))
+      ).to.be.greaterThanOrEqual(Number(disputeFee));
+
+      await token
+        .connect(signers[1])
+        .approve(zapMasterAddresses[1337], disputeFee);
+
+      const zapClass = new Zap(1337, signers[1]);
+
+      await zapClass.dispute("1", String(timeStamp), "4");
+
+      const disputeCountNumber = await zapMaster.getUintVar("disputeCount");
+
+      expect(disputeCountNumber.toString()).to.equal("1");
+
+      const signerSix = await signers[6].getAddress();
+
+      await token.allocate(signerSix, "10000000000000000000000000");
+      const sixZap = new Zap(1337, signers[6]);
+      await sixZap.approveSpending(500000);
+      await sixZap.stake();
+
+      for (let i = 1; i <= 6; i++) {
+        if (i !== 1 && i !== 5) {
+          console.log(i);
+          const instance = new Zap(1337, signers[i]);
+          await instance.approveSpending(500000);
+          await instance.vote(1, true);
+        }
+      }
+
+      await provider.send("evm_increaseTime", [691200]);
+
+      zapClass.tallyVotes(1);
+
+      const disp = await zapMaster.getAllDisputeVars(1);
+
+      console.log(disp)
+
+      // expect voting to have ended
+      expect(disp[1]).to.be.true;
+
+      // expect dispute to have failed
+      expect(disp[2]).to.be.true;
+    });
+
+    it("Should not break", async () => {
+      expect(true).to.be.true;
+    });
+  });
+
 });
