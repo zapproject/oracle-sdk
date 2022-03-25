@@ -31,6 +31,7 @@ import { Address } from "ethereumjs-util";
 import Zap from "../src/zap";
 import Vault from "../src/vault";
 import ZapMaster from "../src/zapMaster";
+import { timeStamp } from "console";
 
 const provider = new ethers.providers.JsonRpcProvider("http://localhost:8545");
 chai.use(chaiAsPromised);
@@ -243,7 +244,7 @@ describe.only("ZapMaster", () => {
 
       const zapClass = new Zap(1337, signers[1]);
 
-      await zapClass.dispute("1", String(timeStamp), "4");
+      await zapClass.dispute("1", String(timeStamp), "3");
 
       const disputeCountNumber = await zapMaster.getUintVar("disputeCount");
 
@@ -257,21 +258,35 @@ describe.only("ZapMaster", () => {
       await sixZap.stake();
 
       for (let i = 1; i <= 6; i++) {
-        if (i !== 1 && i !== 5) {
-          console.log(i);
+        if (i !== 1 && i !== 4) {
           const instance = new Zap(1337, signers[i]);
           await instance.approveSpending(500000);
           await instance.vote(1, true);
         }
       }
 
+      
+
+      const zapMasterClass = new ZapMaster(1337, signers[1]);
+      const timestamp = await zapMasterClass.getTimestampbyRequestIDandIndex(1, 0);
+
+      expect(String(timestamp)).to.equal(String(timeStamp));
+
+      const miners = await zapMasterClass.getMinersByRequestIdAndTimestamp(1, timestamp);
+
+      const fromHashDisputeId = await zapMasterClass.getDisputeIdByDisputeHash(miners[2], 1, timestamp);
+
+      const isInDispute = await zapMasterClass.isInDispute(1, timestamp);
+
+      // expect(isInDispute).to.be.true;
+
+      // test for zapMaster Class Getter
+
       await provider.send("evm_increaseTime", [691200]);
 
       await zapClass.tallyVotes(1);
 
       const disp = await zapMaster.getAllDisputeVars(1);
-
-      console.log(disp)
 
       // expect voting to have ended
       expect(disp[1]).to.be.true;
@@ -280,10 +295,54 @@ describe.only("ZapMaster", () => {
       expect(disp[2]).to.be.true;
     });
 
-    it("Should not break", async () => {
+    it.only("Should not break", async () => {
       const zapMasterClass = new ZapMaster(1337, signers[1]);
-      const timestamp = zapMasterClass.getTimestampbyRequestIDandIndex(1, 3);
-      console.log(timestamp)
+      const timestamp = await zapMasterClass.getTimestampbyRequestIDandIndex(1, 0);
+
+      const miners = await zapMasterClass.getMinersByRequestIdAndTimestamp(1, timestamp);
+
+      const fromHashDisputeId = await zapMasterClass.getDisputeIdByDisputeHash(miners[2], 1, timestamp);
+
+      const isInDispute = await zapMasterClass.isInDispute("1", timestamp);
+
+      const disputeCount = await zapMasterClass.getUintVar("disputeCount");
+
+      console.log(fromHashDisputeId)
+
+      expect(isInDispute).to.be.false;
+
+              // uint keccak256("requestId");//apiID of disputed value
+        // uint keccak256("timestamp");//timestamp of distputed value
+        // uint keccak256("value"); //the value being disputed
+        // uint keccak256("minExecutionDate");//7 days from when dispute initialized
+        // uint keccak256("numberOfVotes");//the number of parties who have voted on the measure
+        // uint keccak256("blockNumber");// the blocknumber for which votes will be calculated from
+        // uint keccak256("minerSlot"); //index in dispute array
+        // uint keccak256("quorum"); //quorum for dispute vote NEW
+        // uint keccak256("fee"); //fee paid corresponding to dispute
+
+        const requestId = await zapMasterClass.getDisputeUintVars(1, "requestId")
+        const timestampDispute = await zapMasterClass.getDisputeUintVars(1, "timestamp")
+        const valueDispute = await zapMasterClass.getDisputeUintVars(1, "value")
+        const minExecutionDate = await zapMasterClass.getDisputeUintVars(1, "minExecutionDate")
+        const numberOfVotes = await zapMasterClass.getDisputeUintVars(1, "numberOfVotes")
+        const blockNumber = await zapMasterClass.getDisputeUintVars(1, "blockNumber")
+        const minerSlot = await zapMasterClass.getDisputeUintVars(1, "minerSlot")
+        const quorum = await zapMasterClass.getDisputeUintVars(1, "quorum")
+        const fee = await zapMasterClass.getDisputeUintVars(1, "fee")
+
+        console.log("ID",String(requestId))
+        console.log("time",String(timestampDispute))
+        console.log("value", String(valueDispute))
+        console.log("minEx", String(minExecutionDate))
+        console.log("Vote count",String(numberOfVotes))
+        console.log("BlockNumber",String(blockNumber))
+        console.log("MinerSlot", String(minerSlot))
+        console.log("Quorum",String(quorum))
+        console.log("Fee", String(fee))
+
+
+      
     });
   });
 

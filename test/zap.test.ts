@@ -404,56 +404,63 @@ describe("Zap Class", () => {
     });
     //////////////////////// From hardhat-bsc
 
-    it('Should be able to dispute a submission.', async () => {
+    it("Should be able to dispute a submission.", async () => {
       // Converts the uintVar "stakeAmount" to a bytes array
-      const timeOfLastNewValueBytes: Uint8Array = ethers.utils.toUtf8Bytes(
-        'timeOfLastNewValue'
-      );
-  
+      const timeOfLastNewValueBytes: Uint8Array =
+        ethers.utils.toUtf8Bytes("timeOfLastNewValue");
+
       // Converts the uintVar "stakeAmount" from a bytes array to a keccak256 hash
       const timeOfLastNewValueHash: string = ethers.utils.keccak256(
         timeOfLastNewValueBytes
       );
-  
+
       // Gets the the current stake amount
       let timeStamp: BigNumber = await zapMaster.getUintVar(
         timeOfLastNewValueHash
       );
-  
+
       /////////// await zapTokenBsc.connect(signers[1]).approve(zapMaster.address, BigNumber.from("500000000000000000000000"));
-      await token.connect(signers[1]).approve(zapMaster.address, "500000000000000000000000");
+      await token
+        .connect(signers[1])
+        .approve(zapMaster.address, "500000000000000000000000");
 
       // Convert to a bytes array
-      const _disputeCount: Uint8Array = ethers.utils.toUtf8Bytes('disputeCount');
-  
+      const _disputeCount: Uint8Array =
+        ethers.utils.toUtf8Bytes("disputeCount");
+
       // Convert to a keccak256 hash
       const disputecount: string = ethers.utils.keccak256(_disputeCount);
-  
+
       // Gets the disputeID also the dispute count
       let disputeId: BigNumber = await zapMaster.getUintVar(disputecount);
-  
+
       // test dispute count before beginDispute
       expect(disputeId).to.deep.equal(
         BigNumber.from("0"),
-        'There should be no disputes before beginDispute.'
+        "There should be no disputes before beginDispute."
       );
-      
-        // Connect with signer whom is not staked
+
+      // Connect with signer whom is not staked
       const zapClass = new Zap(1337, signers[6]);
-      await expect(zapClass.dispute("1", String(timeStamp), "4")).to.be.rejectedWith("Only stakers can begin a dispute")
-  
+      await expect(
+        zapClass.dispute("1", String(timeStamp), "4")
+      ).to.be.rejectedWith("Only stakers can begin a dispute");
+
       // Connect  to signer whom is staked
       await zapClass.zap.connect(signers[1]);
-      const _zapClass = new Zap(1337, signers[1])
+      const _zapClass = new Zap(1337, signers[1]);
       await _zapClass.dispute("1", String(timeStamp), "4");
-  
+
       disputeId = await zapMaster.getUintVar(disputecount);
       // test dispute count after beginDispute
-      expect(disputeId).to.deep.equal(BigNumber.from(1), 'Dispute count should be 1.');
-  
+      expect(disputeId).to.deep.equal(
+        BigNumber.from(1),
+        "Dispute count should be 1."
+      );
+
       disputeId = await zapMaster.getUintVar(disputecount);
       let disp = await zapMaster.getAllDisputeVars(disputeId);
-  
+
       // expect to be the address that begain the dispute
       expect(disp[4]).to.equal(await signers[1].getAddress());
       // expect to be the address that is being disputed
@@ -463,162 +470,162 @@ describe("Zap Class", () => {
       // expect timestamp to be the same timestamp used when disputed
       expect(String(disp[7][1])).to.equal(String(timeStamp));
 
-
-  
-      // check dispute fee increased 
+      // check dispute fee increased
       let disputeFee = await zapMaster.getUintVar(getUintHash("disputeFee"));
       let stakeAmount = await zapMaster.getUintVar(getUintHash("stakeAmount"));
       let stakers = await zapMaster.getUintVar(getUintHash("stakerCount"));
-      let targetMiners = await zapMaster.getUintVar(getUintHash("targetMiners"));
-  
+      let targetMiners = await zapMaster.getUintVar(
+        getUintHash("targetMiners")
+      );
+
       // self.uintVars[keccak256('stakeAmount')].mul(
       //   1000 -
       //   (self.uintVars[keccak256('stakerCount')] * 1000) /
       //   self.uintVars[keccak256('targetMiners')]
       // ) / 1000
       expect(disputeFee).to.deep.equal(
-        stakeAmount.mul(
-          BigNumber.from(1000).sub(
-            stakers.mul(
-              BigNumber.from(1000)
-            ).div(targetMiners)
+        stakeAmount
+          .mul(
+            BigNumber.from(1000).sub(
+              stakers.mul(BigNumber.from(1000)).div(targetMiners)
+            )
           )
-        ).div(
-          BigNumber.from(1000)
-        )
+          .div(BigNumber.from(1000))
       );
 
-
       //////////
+    });
+
+    it.only("Should be able to dispute with token balance exactly equal to disputeFee.", async () => {
+      // main actor in this test case
+      let disputer = await signers[1].getAddress();
+
+      // Converts the uintVar "stakeAmount" to a bytes array
+      const timeOfLastNewValueBytes: Uint8Array =
+        ethers.utils.toUtf8Bytes("timeOfLastNewValue");
+
+      // Converts the uintVar "stakeAmount" from a bytes array to a keccak256 hash
+      const timeOfLastNewValueHash: string = ethers.utils.keccak256(
+        timeOfLastNewValueBytes
+      );
+
+      // Gets the the current stake amount
+      let timeStamp: BigNumber = await zapMaster.getUintVar(
+        timeOfLastNewValueHash
+      );
+
+      // balance of disputer (main actor in this test case)
+      let disputerBalance = (await token.balanceOf(disputer)).toString();
+
+      // give away tokens to make 0 Zap Token balance
+      await token
+        .connect(signers[1])
+        .transfer(await signers[2].getAddress(), disputerBalance);
+
+      // get the disputeFee
+      let disputeFee = await zapMaster.getUintVar(getUintHash("disputeFee"));
+
+      // allocate disputeFee amount of tokens to disputer
+      await token.connect(signers[0]).allocate(disputer, disputeFee);
+
+      disputerBalance = (await token.balanceOf(disputer)).toString(); //487500000000000000000000
+
+      // create zap class
+      const zapClass = new Zap(1337, signers[1]);
+
+      // approve then begin dispute
+      await token.connect(signers[1]).approve(zapMaster.address, disputeFee);
+      await zapClass.dispute("1", String(timeStamp), "4");
+
+      // Convert to a bytes array
+      const disputeCount: Uint8Array = ethers.utils.toUtf8Bytes("disputeCount");
+
+      // Convert to a keccak256 hash
+      const ddisputecount: string = ethers.utils.keccak256(disputeCount);
+
+      // Gets the disputeID also the dispute count
+      let disputeId: BigNumber = await zapMaster.getUintVar(ddisputecount);
+
+      disputeId = await zapMaster.getUintVar(ddisputecount);
+      let disp = await zapMaster.getAllDisputeVars(String(disputeId));
+
+      let reporting_miner_wallet_bal = await token.balanceOf(disp[5]);
+
+      let reportingVBal = await zapVault.userBalance(disp[4]);
+
+      let initReportedVBal = await zapVault.userBalance(disp[3]);
+
+      expect(String(reporting_miner_wallet_bal)).to.equal(String("0"));
+
+      // expect to be the address that begain the dispute
+      expect(disp[4]).to.equal(disputer);
+      // expect to be the address that is being disputed
+      expect(disp[3]).to.equal(await signers[5].getAddress());
+      //expect requestID disputed to be 1
+      expect(String(disp[7][0])).to.equal(String(1));
+      // expect timestamp to be the same timestamp used when disputed
+      expect(String(disp[7][1])).to.equal(String(timeStamp));
+
+      // vote of a dispute
+      // signers 2-4 vote for the dispute 1
+      for (var i = 2; i < 5; i++) {
+        const zapClass = new Zap(1337, signers[i]);
+        await zapClass.vote(Number(String(disputeId)), false);
+      }
+      disputeId = await zapMaster.getUintVar(ddisputecount);
+      disp = await zapMaster.getAllDisputeVars(disputeId);
+      expect(String(disp[7][6])).to.equal(String(4));
+
+      zapMaster.didVote(disputeId, disputer);
+
+      let blockNumber = await provider.getBlockNumber();
+
+      // Increase the evm time by 8 days
+      // A stake can not be withdrawn until 7 days passed
+      await provider.send("evm_increaseTime", [691200]);
+      await zapClass.tallyVotes(Number(String(disputeId)));
+
+      disp = await zapMaster.getAllDisputeVars(disputeId);
+
+      // expect voting to have ended
+      expect(disp[1]).to.be.true;
+
+      // expect dispute to be successful
+      expect(disp[2]).to.be.false;
+
+      blockNumber = await provider.getBlockNumber();
+
+      let winner_miner_wallet_bal = await zapMaster.balanceOf(disp[3]);
+
+      reporting_miner_wallet_bal = await zapMaster.balanceOf(disp[4]);
+
+      let finalReportingVBal = await zapVault.userBalance(disp[4]);
+
+      let finalReportedVBal = await zapVault.userBalance(disp[3]);
+
+      // let zMBal = await zap.getBalanceAt(zapMaster.address, blockNumber);
+      blockNumber = await provider.getBlockNumber();
+
+      // let zMBal = await zap.getBalanceAt(zapMaster.address, blockNumber);
+      let zMBal2 = await zapMaster.balanceOf(zapMaster.address);
+
+      ///
+
+      // expect balance of winner's wallet to be 1087500: 600k(leftover bal. after staking) + 487500 disputeFee
+      expect(String(winner_miner_wallet_bal)).to.equal(
+        String("11087500000000000000000000")
+      );
+
+      // 0, since disputer's balance was exactly disputeFee
+      expect(String(reporting_miner_wallet_bal)).to.equal(String("0"));
+
+      expect(String(reportingVBal)).to.equal(String(finalReportingVBal));
+
+      expect(String(initReportedVBal.add(disputeFee))).to.equal(
+        String(finalReportedVBal)
+      );
+    });
   });
-
-  it.only('Should be able to dispute with token balance exactly equal to disputeFee.', async () => {
-    // main actor in this test case
-    let disputer = await signers[1].getAddress();
-
-
-    // Converts the uintVar "stakeAmount" to a bytes array
-    const timeOfLastNewValueBytes: Uint8Array = ethers.utils.toUtf8Bytes(
-      'timeOfLastNewValue'
-    );
-
-    // Converts the uintVar "stakeAmount" from a bytes array to a keccak256 hash
-    const timeOfLastNewValueHash: string = ethers.utils.keccak256(
-      timeOfLastNewValueBytes
-    );
-
-    // Gets the the current stake amount
-    let timeStamp: BigNumber = await zapMaster.getUintVar(
-      timeOfLastNewValueHash
-    );
-
-    // balance of disputer (main actor in this test case)
-    let disputerBalance = (await token.balanceOf(disputer)).toString();
-   
-    // give away tokens to make 0 Zap Token balance
-    await token.connect(signers[1]).transfer(await signers[2].getAddress(), disputerBalance);
-    
-    // get the disputeFee
-    let disputeFee = await zapMaster.getUintVar(getUintHash("disputeFee"))
-
-    // allocate disputeFee amount of tokens to disputer
-    await token.connect(signers[0]).allocate(disputer, disputeFee);
-    
-    disputerBalance = (await token.balanceOf(disputer)).toString(); //487500000000000000000000
-
-    // create zap class
-    const zapClass = new Zap(1337, signers[1])
-    
-    // approve then begin dispute
-    await token.connect(signers[1]).approve(zapMaster.address, disputeFee);
-    await zapClass.dispute("1", String(timeStamp), "4");
-
-    // Convert to a bytes array
-    const disputeCount: Uint8Array = ethers.utils.toUtf8Bytes('disputeCount');
-
-    // Convert to a keccak256 hash
-    const ddisputecount: string = ethers.utils.keccak256(disputeCount);
-
-    // Gets the disputeID also the dispute count
-    let disputeId: BigNumber = await zapMaster.getUintVar(ddisputecount);
-
-    disputeId = await zapMaster.getUintVar(ddisputecount);
-    let disp = await zapMaster.getAllDisputeVars(String(disputeId));
-
-    let reporting_miner_wallet_bal = await token.balanceOf(disp[5]);
-
-    let reportingVBal = await zapVault.userBalance(disp[4]);
-
-    let initReportedVBal = await zapVault.userBalance(disp[3]);
-
-    expect(String(reporting_miner_wallet_bal)).to.equal(String("0"));
-
-    // expect to be the address that begain the dispute
-    expect(disp[4]).to.equal(disputer);
-    // expect to be the address that is being disputed
-    expect(disp[3]).to.equal(await signers[5].getAddress());
-    //expect requestID disputed to be 1
-    expect(String(disp[7][0])).to.equal(String(1));
-    // expect timestamp to be the same timestamp used when disputed
-    expect(String(disp[7][1])).to.equal(String(timeStamp));
-
-    // vote of a dispute
-    // signers 2-4 vote for the dispute 1
-    for (var i = 2; i < 5; i++) {
-      const zapClass = new Zap(1337, signers[i])
-      await zapClass.vote(Number(String(disputeId)), false);
-    }
-    disputeId = await zapMaster.getUintVar(ddisputecount);
-    disp = await zapMaster.getAllDisputeVars(disputeId);
-    expect(String(disp[7][6])).to.equal(String(4));
-
-    zapMaster.didVote(disputeId, disputer);
-
-    let blockNumber = await provider.getBlockNumber();
-
-    // Increase the evm time by 8 days
-    // A stake can not be withdrawn until 7 days passed
-    await provider.send('evm_increaseTime', [691200]);
-    await zapClass.tallyVotes(Number(String(disputeId)));
-
-    disp = await zapMaster.getAllDisputeVars(disputeId);
-
-    // expect voting to have ended
-    expect(disp[1]).to.be.true;
-
-    // expect dispute to be successful
-    expect(disp[2]).to.be.false;
-
-    blockNumber = await provider.getBlockNumber();
-
-    let winner_miner_wallet_bal = await zapMaster.balanceOf(disp[3]);
-    
-    reporting_miner_wallet_bal = await zapMaster.balanceOf(disp[4]);
-
-    let finalReportingVBal = await zapVault.userBalance(disp[4]);
-
-    let finalReportedVBal = await zapVault.userBalance(disp[3])
-
-    // let zMBal = await zap.getBalanceAt(zapMaster.address, blockNumber);
-    blockNumber = await provider.getBlockNumber();
-
-    // let zMBal = await zap.getBalanceAt(zapMaster.address, blockNumber);
-    let zMBal2 = await zapMaster.balanceOf(zapMaster.address);
-
-
-    /// 
-
-    // expect balance of winner's wallet to be 1087500: 600k(leftover bal. after staking) + 487500 disputeFee
-    expect(String(winner_miner_wallet_bal)).to.equal(String("11087500000000000000000000"));
-
-     // 0, since disputer's balance was exactly disputeFee
-    expect(String(reporting_miner_wallet_bal)).to.equal(String("0"));
-
-    expect(String(reportingVBal)).to.equal(String(finalReportingVBal));
-
-    expect(String(initReportedVBal.add(disputeFee))).to.equal(String(finalReportedVBal));
-  });
-});
 
   describe("Voting", async () => {
     beforeEach(async () => {
@@ -879,7 +886,9 @@ describe("Zap Class", () => {
       await provider.send("evm_increaseTime", [600]);
 
       const nonStaked = new Zap(1337, signers[19]);
-      await nonStaked.tallyVotes(1).should.be.rejectedWith("Cannot vote at this time")
+      await nonStaked
+        .tallyVotes(1)
+        .should.be.rejectedWith("Cannot vote at this time");
     });
     it.only("Should tally votes", async () => {
       for (let i = 6; i <= 12; i++) {
@@ -895,23 +904,18 @@ describe("Zap Class", () => {
       await provider.send("evm_increaseTime", [691200]);
 
       const nonStaked = new Zap(1337, signers[19]);
-      await nonStaked.tallyVotes(1)
-      
+      await nonStaked.tallyVotes(1);
+
       const disp = await zapMaster.getAllDisputeVars(1);
 
-      console.log(disp);
+      // expect voting to have ended
+      expect(disp[1]).to.be.true;
 
-            // expect voting to have ended
-            expect(disp[1]).to.be.true;
-
-            // expect dispute to have failed
-            expect(disp[2]).to.be.true;
-
-    })
-
+      // expect dispute to have failed
+      expect(disp[2]).to.be.true;
+    });
   });
 });
-
 
 // helps grab uintVar variables from ZapStorage
 async function getUintHash(key: string) {
