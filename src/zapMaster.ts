@@ -25,17 +25,37 @@ class ZapMaster {
     );
   }
 
+  public allowance = async (_user: string, _spender: string) => {
+    return this.zapMaster.allowance(_user, _spender);
+  };
+
   public balanceOf = async (_address: string) => {
     return this.zapMaster.balanceOf(_address);
   };
 
-  public getAllDisputeVars = async (disputeId: number) => {
+  public didVote = async (_disputeId: BigNumberish, _address: string) => {
+    return this.zapMaster.didVote(_disputeId, _address);
+  };
+
+  public getAllDisputeVars = async (disputeId: BigNumberish) => {
     return this.zapMaster.getAllDisputeVars(disputeId);
   };
 
-  public getCurrentVariables = () => {
+  public getCurrentVariables = async () => {
     return this.zapMaster.getCurrentVariables();
   };
+
+  public getNewValueCountbyRequestId = async (_requestId: BigNumberish) => {
+    return this.zapMaster.getNewValueCountbyRequestId(_requestId);
+  };
+
+  public getSubmissionsByTimestamp = async (_requestId:BigNumberish, _timestamp: BigNumberish) => {
+    return this.zapMaster.getSubmissionsByTimestamp(_requestId, _timestamp);
+  };
+
+  public getVariablesOnDeck = async () => {
+    return this.zapMaster.getVariablesOnDeck();
+  }
 
   /**
    * @dev Checks if a given hash of miner,requestId has been disputed
@@ -48,7 +68,7 @@ class ZapMaster {
     return this.zapMaster.getDisputeIdByDisputeHash(hash);
   };
 
-  public getDisputeUintVars = (disputeID: number, key: string) => {
+  public getDisputeUintVars = (disputeID: BigNumberish, key: string) => {
     const _bytes: Uint8Array = ethers.utils.toUtf8Bytes(key);
 
     const _hash: string = ethers.utils.keccak256(_bytes);
@@ -67,7 +87,7 @@ class ZapMaster {
     // Converts the uintVar "stakeAmount" from a bytes array to a keccak256 hash
     const _hash: string = ethers.utils.keccak256(_bytes);
 
-    return await this.zapMaster.getUintVar(_hash);
+    return this.zapMaster.getUintVar(_hash);
   };
 
   public getRequestIdByRequestQIndex = async (_index: BigNumberish) => {

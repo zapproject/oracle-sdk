@@ -145,6 +145,10 @@ describe.only("ZapMaster", () => {
       "json(https://api.binance.com/api/v1/klines?symbol=BTCUSDT&interval=1d&limit=1).0.4";
     const _zapClass = new Zap(1337, signers[1]);
     await _zapClass.approveSpending(52000000000000000000);
+
+    let allowance = await zapMaster.allowance(await signers[1].getAddress(), zapMasterAddresses[1337])
+    expect(String(allowance)).to.equal("52000000000000000000000000000000000000");
+
     await _zapClass.zap.requestData(api, symbol, 100000, 10);
 
     symbol = "ETH/USDT";
@@ -262,6 +266,9 @@ describe.only("ZapMaster", () => {
           const instance = new Zap(1337, signers[i]);
           await instance.approveSpending(500000);
           await instance.vote(1, true);
+
+          let voted = await zapMaster.didVote(1, await signers[i].getAddress());
+          expect(voted).to.equal(true);
         }
       }
 
@@ -352,6 +359,21 @@ describe.only("ZapMaster", () => {
     let currentTimestamp = await zapMaster.getTimestampbyRequestIDandIndex(1, 0);
     expect(String(currentTimestamp)).to.not.equal("0");
 
+    let miners = await zapMaster.getMinersByRequestIdAndTimestamp(1, currentTimestamp);
 
+    for (let i = 0; i < miners.length; i++) {
+      expect(miners[i]).to.equal(await signers[i+1].getAddress());
+    }
+
+    let valueCount = await zapMaster.getNewValueCountbyRequestId(1);
+    expect(String(valueCount)).to.equal("1");
+
+    let submissions = await zapMaster.getSubmissionsByTimestamp(1, currentTimestamp);
+    expect(String(submissions[0])).to.equal("1200");
+
+    // let nextVar = await zapMaster.getVariablesOnDeck();
+
+    let retrievedData = await zapMaster.retrieveData(1, currentTimestamp);
+    expect(String(retrievedData)).to.equal("1200");
   })
 });
