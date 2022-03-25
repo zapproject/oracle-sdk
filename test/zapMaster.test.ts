@@ -223,7 +223,6 @@ describe.only("ZapMaster", () => {
   });
 
   describe("Should retrieve all the getters for Disputed values", async function() {
-    this.timeout(400000)
     beforeEach(async () => {
       await mine();
 
