@@ -195,7 +195,7 @@ describe.only("ZapMaster", () => {
       for (var i = 1; i <= 5; i++) {
         const _address = await signers[i].getAddress();
 
-        token
+        await token
           .connect(signers[i])
           .approve(
             zapMasterAddresses[1337],
@@ -273,7 +273,7 @@ describe.only("ZapMaster", () => {
 
       await provider.send("evm_increaseTime", [691200]);
 
-      zapClass.tallyVotes(1);
+      await zapClass.tallyVotes(1);
 
       const disp = await zapMaster.getAllDisputeVars(1);
 
