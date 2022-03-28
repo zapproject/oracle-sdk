@@ -302,7 +302,7 @@ describe.only("ZapMaster", () => {
       expect(disp[2]).to.be.true;
     });
 
-    it.only("Should not break", async () => {
+    it("Should not break", async () => {
       const zapMasterClass = new ZapMaster(1337, signers[1]);
       const timestamp = await zapMasterClass.getTimestampbyRequestIDandIndex(1, 0);
 
