@@ -1,4 +1,4 @@
-import chai, { expect, should } from "chai";
+import chai, { expect } from "chai";
 import chaiAsPromised from "chai-as-promised";
 import { BigNumber, Contract, ethers, Signer } from "ethers";
 import {
@@ -27,8 +27,7 @@ import Zap from "../src/zap";
 import Vault from "../src/vault";
 
 import { getSigners } from "./test_utils";
-import { SuiteConstants } from "mocha";
-import { Address } from "ethereumjs-util";
+
 
 const provider = new ethers.providers.JsonRpcProvider("http://localhost:8545");
 chai.use(chaiAsPromised);

@@ -25,13 +25,8 @@ import {
 } from "../src/contract/addresses";
 
 import { getSigners } from "./test_utils";
-import { SuiteConstants } from "mocha";
-import { Address } from "ethereumjs-util";
-
 import Zap from "../src/zap";
-import Vault from "../src/vault";
 import ZapMaster from "../src/zapMaster";
-import { timeStamp } from "console";
 
 const provider = new ethers.providers.JsonRpcProvider("http://localhost:8545");
 chai.use(chaiAsPromised);
