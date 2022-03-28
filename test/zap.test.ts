@@ -51,23 +51,18 @@ describe("Zap Class", () => {
     signer = signers[0];
 
     token = await deployZapToken();
-    console.log("token address: ", token.address);
     await token.deployed();
 
     zapGettersLibrary = await deployZapGettersLibrary();
-    console.log("zapGettersLibrary address: ", zapGettersLibrary.address);
     await zapGettersLibrary.deployed();
 
     zapDispute = await deployZapDispute();
-    console.log("zapDispute address: ", zapDispute.address);
     await zapDispute.deployed();
 
     zapStake = await deployZapStake(zapDispute.address);
-    console.log("zapStake address: ", zapStake.address);
     await zapStake.deployed();
 
     zapLibrary = await deployZapLibrary();
-    console.log("zapLibrary address: ", zapLibrary.address);
     await zapLibrary.deployed();
 
     zap = await deployZap(
@@ -76,7 +71,6 @@ describe("Zap Class", () => {
       zapStake.address,
       zapLibrary.address
     );
-    console.log("zap address: ", zap.address);
     await zap.deployed();
 
     zapMaster = await deployZapMaster(
@@ -84,11 +78,9 @@ describe("Zap Class", () => {
       token.address,
       zapStake.address
     );
-    console.log("zapMaster address: ", zapMaster.address);
     await zapMaster.deployed();
 
     zapVault = await deployVault(zapMaster.address, token.address);
-    console.log("zapVault address: ", zapVault.address);
     await zapVault.deployed();
 
     await zapMaster.changeVaultContract(zapVault.address);
@@ -367,9 +359,7 @@ describe("Zap Class", () => {
 
       for (var i = 1; i <= 5; i++) {
         const _address = await signers[i].getAddress();
-        console.log(`Miner ${i}: ${_address}`);
         const status = await zapMaster.getStakerInfo(_address);
-        console.log(status[0].toString());
         const zapClass = new Zap(1337, signers[i]);
         await zapClass.approveSpending(i === 5 ? 50000000 : 500000);
         // Connects address 1 as the signer
