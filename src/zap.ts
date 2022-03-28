@@ -80,32 +80,32 @@ class Zap {
 
     /**
      * Begins a new dispute of specified request, timestamp, and miner.
-     * @param _requesteId - The ID of the request to dispute
+     * @param _requestId - The ID of the request to dispute
      * @param _timestamp - The timestamp of the request
      * @param _minerId - The index ID of the miner of block to dispute
      * @returns The Promise transaction object
      */
-    public dispute = async(_requesteId: string, _timestamp: string, _minerId: string) => {
-        return this.zap.beginDispute(_requesteId, _timestamp, _minerId);
+    public dispute = async(_requestId: string, _timestamp: string, _minerId: string) => {
+        return this.zap.beginDispute(_requestId, _timestamp, _minerId);
     }
 
     /**
      * Votes for or against a dispute.
-     * @param disputId - The Id of the dispute to resolve
+     * @param disputeId - The Id of the dispute to resolve
      * @param vote - The boolean vote value
      * @returns The Promise transaction object
      */
-    public vote = async(disputId: number, vote: boolean) => {
-        return this.zap.vote(disputId, vote);
+    public vote = async(disputeId: number, vote: boolean) => {
+        return this.zap.vote(disputeId, vote);
     }
 
     /**
      * Tallies the votes made for a dispute
-     * @param disputId - The Id of the dispute to resolve
+     * @param disputeId - The Id of the dispute to resolve
      * @returns The Promise transaction object
      */
-    public tallyVotes = async(disputId: number) => {
-        return this.zap.tallyVotes(disputId);
+    public tallyVotes = async(disputeId: number) => {
+        return this.zap.tallyVotes(disputeId);
     }
 }
 
