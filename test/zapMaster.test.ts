@@ -25,13 +25,8 @@ import {
 } from "../src/contract/addresses";
 
 import { getSigners } from "./test_utils";
-import { SuiteConstants } from "mocha";
-import { Address } from "ethereumjs-util";
-
-import Zap from "../src/zap";
-import Vault from "../src/vault";
-import ZapMaster from "../src/zapMaster";
-import { time, timeStamp } from "console";
+import {Zap} from "../src/zap";
+import {ZapMaster} from "../src/zapMaster";
 
 const provider = new ethers.providers.JsonRpcProvider("http://localhost:8545");
 chai.use(chaiAsPromised);
@@ -192,18 +187,30 @@ describe.only("ZapMaster", () => {
     let requestGran = await zapMaster.getRequestUintVars(1, "granularity");
     expect(String(requestGran)).to.equal("100000");
 
+    let requestGran2 = await zapMaster.getRequestGranularity(1);
+    expect(String(requestGran2)).to.equal(String(requestGran));
+
     let totalTip = await zapMaster.getUintVar("currentTotalTips");
     expect(String(totalTip)).to.equal("10");
+
+    let totalTip2 = await zapMaster.getCurrentTotalTips();
+    expect(String(totalTip2)).to.equal(String(totalTip));
 
     // the request's total tip is 0 because it's been transfer to on-deck as there is only one request and is now currentTotalTips
     let requestTotalTip = await zapMaster.getRequestUintVars(1, "totalTip");
     expect(String(requestTotalTip)).to.equal("0");
+
+    let requestTotalTip3 = await zapMaster.getRequestTotalTip(1);
+    expect(String(requestTotalTip3)).to.equal(String(requestTotalTip));
 
     let requestTotalTip2 = await zapMaster.getRequestUintVars(2, "totalTip");
     expect(String(requestTotalTip2)).to.equal("1");
 
     let requestQ = await zapMaster.getRequestQ();
     expect(String(requestQ[50])).to.equal("1");
+
+    let requestQ2 = await zapMaster.getRequestQPosition(2);
+    expect(String(requestQ2)).to.equal("50");
 
     let requestIdFromQ = await zapMaster.getRequestIdByRequestQIndex(50);
     expect(String(requestIdFromQ)).to.equal("2");
@@ -236,7 +243,13 @@ describe.only("ZapMaster", () => {
         "timeOfLastNewValue"
       );
 
+      let timestamp2 = await zapMaster.getTimeOfLastNewValue();
+      expect(String(timestamp2)).to.eq(String(timeStamp));
+
       let disputeFee = await zapMaster.getUintVar("disputeFee");
+
+      let disputeFee2 = await zapMaster.getDisputeFee();
+      expect(String(disputeFee)).to.eq(String(disputeFee2));
 
       expect(
         Number(await token.balanceOf(signers[1].getAddress()))
@@ -253,6 +266,9 @@ describe.only("ZapMaster", () => {
       const disputeCountNumber = await zapMaster.getUintVar("disputeCount");
 
       expect(disputeCountNumber.toString()).to.equal("1");
+
+      let disputeCountNum2 = await zapMaster.getDisputeCount();
+      expect(String(disputeCountNum2)).to.eq(String(disputeCountNumber));
 
       const signerSix = await signers[6].getAddress();
 
@@ -305,7 +321,7 @@ describe.only("ZapMaster", () => {
       expect(disp[2]).to.be.true;
     });
 
-    it.only("Should return 0 from retrieve data call", async () => {
+    it("Should return 0 from retrieve data call", async () => {
       const zapMasterClass = new ZapMaster(1337, signers[1]);
       const timestamp = await zapMasterClass.getTimestampbyRequestIDandIndex(1, 0);
 
@@ -358,8 +374,23 @@ describe.only("ZapMaster", () => {
         console.log("Quorum",String(quorum))
         console.log("Fee", String(fee))
 
-
-      
+        let requestId2 = await zapMasterClass.getDisputeRequestID(1);
+        let timestampDispute2 = await zapMasterClass.getDisputeTimestamp(1);
+        let valueDispute2 = await zapMasterClass.getDisputeValue(1);
+        let minExecutionDate2 = await zapMasterClass.getDisputeMinExecDate(1);
+        let numberOfVotes2 = await zapMasterClass.getDisputeNumVotes(1);
+        let blockNumber2 = await zapMasterClass.getDisputeBlockNumber(1);
+        let minerSlot2 = await zapMasterClass.getDisputeMinerSlot(1);
+        let quorum2 = await zapMasterClass.getDisputeQuorum(1);
+        
+        expect(String(requestId2)).to.eq(String(requestId));
+        expect(String(timestampDispute2)).to.eq(String(timestampDispute));
+        expect(String(valueDispute2)).to.eq(String(valueDispute));
+        expect(String(minExecutionDate2)).to.eq(String(minExecutionDate));
+        expect(String(numberOfVotes2)).to.eq(String(numberOfVotes));
+        expect(String(blockNumber2)).to.eq(String(blockNumber));
+        expect(String(minerSlot2)).to.eq(String(minerSlot));
+        expect(String(quorum2)).to.eq(String(quorum));
     });
   });
 
