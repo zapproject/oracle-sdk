@@ -124,7 +124,7 @@ export class ZapMaster {
    * @param key - The mapping key to retrieve
    * @returns The Promise of the uint variable
    */
-  public getDisputeUintVars = (disputeID: BigNumberish, key: string) => {
+  public getDisputeUintVars = async (disputeID: BigNumberish, key: string) => {
     const _bytes: Uint8Array = ethers.utils.toUtf8Bytes(key);
 
     const _hash: string = ethers.utils.keccak256(_bytes);
@@ -132,6 +132,94 @@ export class ZapMaster {
     return this.zapMaster.getDisputeUintVars(disputeID, _hash);
   };
 
+  /**
+   * Retreives the request ID in reference to the specified dispute
+   * @param disputeId - The ID of the dispute to reference
+   * @returns The Promise of the request ID
+   */
+  public getDisputeRequestID = async (disputeId: BigNumberish) => {
+    let _bytes: Uint8Array = ethers.utils.toUtf8Bytes("requestId");
+    let _hash: string = ethers.utils.keccak256(_bytes);
+    return this.zapMaster.getDisputeUintVars(disputeId, _hash);
+  }
+
+  /**
+   * Retreives the request timestamp in reference to the specified dispute
+   * @param disputeId - The ID of the dispute to reference
+   * @returns The Promise of the request timestamp
+   */
+  public getDisputeTimestamp = async (disputeId: BigNumberish) => {
+    let _bytes: Uint8Array = ethers.utils.toUtf8Bytes("timestamp");
+    let _hash: string = ethers.utils.keccak256(_bytes);
+    return this.zapMaster.getDisputeUintVars(disputeId, _hash);
+  }
+
+  /**
+   * Retreives the dispute value in reference to the specified dispute
+   * @param disputeId - The ID of the dispute to reference
+   * @returns The Promise of the dispute value
+   */
+  public getDisputeValue = async (disputeId: BigNumberish) => {
+    let _bytes: Uint8Array = ethers.utils.toUtf8Bytes("value");
+    let _hash: string = ethers.utils.keccak256(_bytes);
+    return this.zapMaster.getDisputeUintVars(disputeId, _hash);
+  }
+
+  /**
+   * Retreives the minimum execution date in reference to the specified dispute
+   * @param disputeId - The ID of the dispute to reference
+   * @returns The Promise of the minimum execution date
+   */
+  public getDisputeMinExecDate = async (disputeId: BigNumberish) => {
+    let _bytes: Uint8Array = ethers.utils.toUtf8Bytes("minExecutionDate");
+    let _hash: string = ethers.utils.keccak256(_bytes);
+    return this.zapMaster.getDisputeUintVars(disputeId, _hash);
+  }
+
+  /**
+   * Retreives the number of votes in reference to the specified dispute
+   * @param disputeId - The ID of the dispute to reference
+   * @returns The Promise of the number of votes
+   */
+  public getDisputeNumVotes = async (disputeId: BigNumberish) => {
+    let _bytes: Uint8Array = ethers.utils.toUtf8Bytes("numberOfVotes");
+    let _hash: string = ethers.utils.keccak256(_bytes);
+    return this.zapMaster.getDisputeUintVars(disputeId, _hash);
+  }
+
+  /**
+   * Retreives the block number in reference to the specified dispute
+   * @param disputeId - The ID of the dispute to reference
+   * @returns The Promise of the block number
+   */
+  public getDisputeBlockNumber= async (disputeId: BigNumberish) => {
+    let _bytes: Uint8Array = ethers.utils.toUtf8Bytes("blockNumber");
+    let _hash: string = ethers.utils.keccak256(_bytes);
+    return this.zapMaster.getDisputeUintVars(disputeId, _hash);
+  }
+
+  /**
+   * Retreives the miner slot in reference to the specified dispute
+   * @param disputeId - The ID of the dispute to reference
+   * @returns The Promise of the miner slot
+   */
+  public getDisputeMinerSlot = async (disputeId: BigNumberish) => {
+    let _bytes: Uint8Array = ethers.utils.toUtf8Bytes("minerSlot");
+    let _hash: string = ethers.utils.keccak256(_bytes);
+    return this.zapMaster.getDisputeUintVars(disputeId, _hash);
+  }
+
+  /**
+   * Retreives the quorum in reference to the specified dispute
+   * @param disputeId - The ID of the dispute to reference
+   * @returns The Promise of the quorum
+   */
+  public getDisputeQuorum = async (disputeId: BigNumberish) => {
+    let _bytes: Uint8Array = ethers.utils.toUtf8Bytes("quorum");
+    let _hash: string = ethers.utils.keccak256(_bytes);
+    return this.zapMaster.getDisputeUintVars(disputeId, _hash);
+  }
+  
   /**
    * Retreives whether the set value of a block is in dispute.
    * @param requestID - The ID of the request to reference
@@ -156,6 +244,142 @@ export class ZapMaster {
 
     return this.zapMaster.getUintVar(_hash);
   };
+
+  public getDecimals = async () => {
+    let _bytes: Uint8Array = ethers.utils.toUtf8Bytes("decimals");
+    let _hash: string = ethers.utils.keccak256(_bytes);
+    return this.zapMaster.getUintVar(_hash);
+  }
+
+  /**
+   * Retreives the dispute fee.
+   * @returns The Promise of the dispute fee
+   */
+  public getDisputeFee = async () => {
+    let _bytes: Uint8Array = ethers.utils.toUtf8Bytes("disputeFee");
+    let _hash: string = ethers.utils.keccak256(_bytes);
+    return this.zapMaster.getUintVar(_hash);
+  }
+
+  /**
+   * Retreives the dispute count.
+   * @returns The Promise of the dispute count
+   */
+   public getDisputeCount = async () => {
+    let _bytes: Uint8Array = ethers.utils.toUtf8Bytes("disputeCount");
+    let _hash: string = ethers.utils.keccak256(_bytes);
+    return this.zapMaster.getUintVar(_hash);
+  }
+
+  /**
+   * Retreives the stake amount
+   * @returns The Promise of the stake amount
+   */
+   public getStakeAmount = async () => {
+    let _bytes: Uint8Array = ethers.utils.toUtf8Bytes("stakeAmount");
+    let _hash: string = ethers.utils.keccak256(_bytes);
+    return this.zapMaster.getUintVar(_hash);
+  }
+
+  /**
+   * Retreives the staker count.
+   * @returns The Promise of the staker count
+   */
+   public getStakerCount = async () => {
+    let _bytes: Uint8Array = ethers.utils.toUtf8Bytes("stakerCount");
+    let _hash: string = ethers.utils.keccak256(_bytes);
+    return this.zapMaster.getUintVar(_hash);
+  }
+
+  /**
+   * Retreives the time of last new value. The time of last challenge solved.
+   * @returns The Promise of the time of last new value
+   */
+   public getTimeOfLastNewValue = async () => {
+    let _bytes: Uint8Array = ethers.utils.toUtf8Bytes("timeOfLastNewValue");
+    let _hash: string = ethers.utils.keccak256(_bytes);
+    return this.zapMaster.getUintVar(_hash);
+  }
+
+  /**
+   * Retreives the difficulty. The difficulty of current block.
+   * @returns The Promise of the difficulty
+   */
+   public getDifficulty = async () => {
+    let _bytes: Uint8Array = ethers.utils.toUtf8Bytes("difficulty");
+    let _hash: string = ethers.utils.keccak256(_bytes);
+    return this.zapMaster.getUintVar(_hash);
+  }
+
+  /**
+   * Retreives the current total tips. The value of highest api/timestamp payout pool.
+   * @returns The Promise of the current total tips.
+   */
+   public getCurrentTotalTips = async () => {
+    let _bytes: Uint8Array = ethers.utils.toUtf8Bytes("currentTotalTips");
+    let _hash: string = ethers.utils.keccak256(_bytes);
+    return this.zapMaster.getUintVar(_hash);
+  }
+
+  /**
+   * Retreives the request ID.
+   * @returns The Promise of the request ID
+   */
+   public getCurrentRequestId = async () => {
+    let _bytes: Uint8Array = ethers.utils.toUtf8Bytes("currentRequestId");
+    let _hash: string = ethers.utils.keccak256(_bytes);
+    return this.zapMaster.getUintVar(_hash);
+  }
+
+  /**
+   * Retreives the request count. The total number of requests through the system.
+   * @returns The Promise of the request count
+   */
+   public getRequestCount = async () => {
+    let _bytes: Uint8Array = ethers.utils.toUtf8Bytes("requestCount");
+    let _hash: string = ethers.utils.keccak256(_bytes);
+    return this.zapMaster.getUintVar(_hash);
+  }
+
+  /**
+   * Retreives the slot progress. The number of miners who have mined this value so far.
+   * @returns The Promise of the slot progress
+   */
+   public getSlotProgress = async () => {
+    let _bytes: Uint8Array = ethers.utils.toUtf8Bytes("slotProgress");
+    let _hash: string = ethers.utils.keccak256(_bytes);
+    return this.zapMaster.getUintVar(_hash);
+  }
+
+  /**
+   * Retreives the mining reward. The mining Reward given to all miners per value.
+   * @returns The Promise of the mining reward
+   */
+   public getMiningReward = async () => {
+    let _bytes: Uint8Array = ethers.utils.toUtf8Bytes("miningReward");
+    let _hash: string = ethers.utils.keccak256(_bytes);
+    return this.zapMaster.getUintVar(_hash);
+  }
+
+  /**
+   * Retreives the time target. The time between blocks (mined Oracle values).
+   * @returns The Promise of the time target
+   */
+   public getTimeTarget = async () => {
+    const _bytes: Uint8Array = ethers.utils.toUtf8Bytes("timeTarget");
+    const _hash: string = ethers.utils.keccak256(_bytes);
+    return this.zapMaster.getUintVar(_hash);
+  }
+
+  /**
+   * Retreives the current mining reward. The last reward given to miners on creation of a new block.
+   * @returns The Promise of the current mining reward
+   */
+   public getCurrentMiningReward = async () => {
+    const _bytes: Uint8Array = ethers.utils.toUtf8Bytes("getCurrentMiningReward");
+    const _hash: string = ethers.utils.keccak256(_bytes);
+    return this.zapMaster.getUintVar(_hash);
+  }
 
   /**
    * Retreives the request by the request Q index
@@ -188,6 +412,39 @@ export class ZapMaster {
     let data = ethers.utils.keccak256(bytes);
     return this.zapMaster.getRequestUintVars(_requestId, data);
   };
+
+  /**
+   * Retreives the granularity of specified request.
+   * @param requestId - The ID of the request to reference
+   * @returns The Promise of the granularity
+   */
+  public getRequestGranularity = async (requestId: BigNumberish) => {
+    let bytes = ethers.utils.toUtf8Bytes("granularity");
+    let data = ethers.utils.keccak256(bytes);
+    return this.zapMaster.getRequestUintVars(requestId, data);
+  }
+
+  /**
+   * Retreives the request Q position of specified request.
+   * @param requestId - The ID of the request to reference
+   * @returns The Promise of the request Q position
+   */
+  public getRequestQPosition = async (requestId: BigNumberish) => {
+    let bytes = ethers.utils.toUtf8Bytes("requestQPosition");
+    let data = ethers.utils.keccak256(bytes);
+    return this.zapMaster.getRequestUintVars(requestId, data);
+  }
+
+  /**
+   * Retreives the total tip of specified request.
+   * @param requestId - The ID of the request to reference
+   * @returns The Promise of the total tip
+   */
+  public getRequestTotalTip = async (requestId: BigNumberish) => {
+    let bytes = ethers.utils.toUtf8Bytes("totalTip");
+    let data = ethers.utils.keccak256(bytes);
+    return this.zapMaster.getRequestUintVars(requestId, data);
+  }
 
   /**
    * Retreives the request variables of specified request
