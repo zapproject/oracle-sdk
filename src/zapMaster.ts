@@ -65,6 +65,7 @@ class ZapMaster {
 
   public getDisputeIdByDisputeHash = async (miner: BigNumberish, requestID: BigNumberish, timestamp: BigNumberish) => {
       const hash = ethers.utils.solidityKeccak256([ "address", "uint256", "uint256" ], [ miner, requestID, timestamp ]);
+      console.log("hash: ", hash)
     return this.zapMaster.getDisputeIdByDisputeHash(hash);
   };
 

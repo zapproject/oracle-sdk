@@ -31,7 +31,7 @@ import { Address } from "ethereumjs-util";
 import Zap from "../src/zap";
 import Vault from "../src/vault";
 import ZapMaster from "../src/zapMaster";
-import { timeStamp } from "console";
+import { time, timeStamp } from "console";
 
 const provider = new ethers.providers.JsonRpcProvider("http://localhost:8545");
 chai.use(chaiAsPromised);
@@ -248,7 +248,7 @@ describe.only("ZapMaster", () => {
 
       const zapClass = new Zap(1337, signers[1]);
 
-      await zapClass.dispute("1", String(timeStamp), "3");
+      await zapClass.dispute("1", String(timeStamp), "2");
 
       const disputeCountNumber = await zapMaster.getUintVar("disputeCount");
 
@@ -262,7 +262,7 @@ describe.only("ZapMaster", () => {
       await sixZap.stake();
 
       for (let i = 1; i <= 6; i++) {
-        if (i !== 1 && i !== 4) {
+        if (i !== 1 && i !== 3) {
           const instance = new Zap(1337, signers[i]);
           await instance.approveSpending(500000);
           await instance.vote(1, true);
@@ -283,9 +283,12 @@ describe.only("ZapMaster", () => {
 
       const fromHashDisputeId = await zapMasterClass.getDisputeIdByDisputeHash(miners[2], 1, timestamp);
 
+      expect(String(fromHashDisputeId)).to.equal(String("1"))
+
       const isInDispute = await zapMasterClass.isInDispute(1, timestamp);
 
-      // expect(isInDispute).to.be.true;
+      expect(isInDispute).to.be.true; // this value never changes back to false after disputed
+
 
       // test for zapMaster Class Getter
 
@@ -302,7 +305,7 @@ describe.only("ZapMaster", () => {
       expect(disp[2]).to.be.true;
     });
 
-    it.only("Should not break", async () => {
+    it.only("Should return 0 from retrieve data call", async () => {
       const zapMasterClass = new ZapMaster(1337, signers[1]);
       const timestamp = await zapMasterClass.getTimestampbyRequestIDandIndex(1, 0);
 
@@ -310,15 +313,22 @@ describe.only("ZapMaster", () => {
 
       const fromHashDisputeId = await zapMasterClass.getDisputeIdByDisputeHash(miners[2], 1, timestamp);
 
+      expect(String(fromHashDisputeId)).to.equal(String("1"))
+
       const isInDispute = await zapMasterClass.isInDispute("1", timestamp);
+
+      expect(isInDispute).to.be.true; // this value never changes back to false after disputed
 
       const disputeCount = await zapMasterClass.getUintVar("disputeCount");
 
-      console.log(fromHashDisputeId)
+      console.log("dispute id from hash: ", fromHashDisputeId)
 
-      expect(isInDispute).to.be.false;
+      // if dispute has passed successfully retreive data should return 0 else it should return 1200
+      let retrievedData = await zapMaster.retrieveData(1, timestamp);
+      expect(String(retrievedData)).to.equal("0");
 
-              // uint keccak256("requestId");//apiID of disputed value
+
+        // uint keccak256("requestId");//apiID of disputed value
         // uint keccak256("timestamp");//timestamp of distputed value
         // uint keccak256("value"); //the value being disputed
         // uint keccak256("minExecutionDate");//7 days from when dispute initialized
