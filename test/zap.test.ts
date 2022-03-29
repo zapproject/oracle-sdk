@@ -23,8 +23,8 @@ import {
   vaultAddresses,
 } from "../src/contract/addresses";
 
-import Zap from "../src/zap";
-import Vault from "../src/vault";
+import { Zap } from "../src/zap";
+import { Vault } from "../src/vault";
 
 import { getSigners } from "./test_utils";
 

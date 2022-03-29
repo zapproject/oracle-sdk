@@ -13,7 +13,7 @@ import { contractAddresses } from "./utils";
  * The ZapMaster class binding for the ZapMast Oracle smart contract.
  * Exposes all the getters concerning the Oracles.
  */
-class ZapMaster {
+export class ZapMaster {
   public readonly zapMaster: Contract;
   public readonly chainId: number;
   public readonly signer: Signer;
@@ -244,4 +244,4 @@ class ZapMaster {
   }
 }
 
-export default ZapMaster;
+// export default ZapMaster;

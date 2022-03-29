@@ -6,7 +6,7 @@ import { contractAddresses } from "./utils";
  * The Zap class binding for the Zap Oracle smart contract.
  * Exposes state changing functionalities including staking, mining, and disputing.
  */
-class Zap {
+export class Zap {
     public readonly zap: Contract;
     public readonly chainId: number;
     public readonly signer: Signer;
@@ -109,4 +109,4 @@ class Zap {
     }
 }
 
-export default Zap;
+// export default Zap;

@@ -5,7 +5,7 @@ import { contractAddresses } from "./utils";
 /**
  * The Vault class binding for the Vauilt Oracle smart contract.
  */
-class Vault {
+export class Vault {
     public readonly vault: Contract;
     public readonly chainId: number;
     public readonly signer: Signer;
@@ -35,4 +35,4 @@ class Vault {
     }
 }
 
-export default Vault;
+// export default Vault;

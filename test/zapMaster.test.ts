@@ -25,8 +25,8 @@ import {
 } from "../src/contract/addresses";
 
 import { getSigners } from "./test_utils";
-import Zap from "../src/zap";
-import ZapMaster from "../src/zapMaster";
+import {Zap} from "../src/zap";
+import {ZapMaster} from "../src/zapMaster";
 
 const provider = new ethers.providers.JsonRpcProvider("http://localhost:8545");
 chai.use(chaiAsPromised);
