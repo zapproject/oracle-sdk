@@ -387,7 +387,7 @@ describe("ZapMaster", () => {
     });
   });
 
-  it("Should get mining getters", async () => {
+  it.only("Should get mining getters", async () => {
     await mine();
 
     let currentTimestamp = await zapMaster.getTimestampbyRequestIDandIndex(1, 0);

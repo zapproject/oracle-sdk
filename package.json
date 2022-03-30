@@ -37,11 +37,14 @@
   },
   "dependencies": {
     "@typechain/ethers-v5": "^9.0.0",
+    "@zapprotocol/bsc-contracts": "^1.0.0",
     "assert": "^2.0.0",
     "chai-as-promised": "^7.1.1",
     "eth-sig-util": "^3.0.1",
     "ethereumjs-util": "^7.1.4",
     "ethers": "^5.5.2",
+    "i": "^0.3.7",
+    "npm": "^8.5.5",
     "tiny-invariant": "^1.2.0",
     "tiny-warning": "^1.0.3",
     "typechain": "^7.0.1"

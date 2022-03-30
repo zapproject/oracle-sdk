@@ -4,6 +4,14 @@ import * as abis from './contract/abi';
 
 import * as bytecodes from './contract/bytecode';
 
+import * as disputeJson from '@zapprotocol/bsc-contracts/artifacts/contracts/zap-miner/libraries/ZapDispute.sol/ZapDispute.json'
+
+import * as gettersJson from '@zapprotocol/bsc-contracts/artifacts/contracts/zap-miner/libraries/ZapGettersLibrary.sol/ZapGettersLibrary.json'
+
+import * as stakeJson from '@zapprotocol/bsc-contracts/artifacts/contracts/zap-miner/libraries/ZapStake.sol/ZapStake.json'
+
+console.log(stakeJson.abi, stakeJson.bytecode)
+
 const provider = new ethers.providers.JsonRpcProvider('http://localhost:8545');
 
 const signer = provider.getSigner(0);
@@ -69,8 +77,8 @@ export const deployZapToken = async () => {
 
 export const deployZapGettersLibrary = async () => {
   const zapGettersLibraryFactory = new ethers.ContractFactory(
-    abis.zapGettersLibraryAbi,
-    bytecodes.zapGettersLibraryByteCode,
+    gettersJson.abi,
+    gettersJson.bytecode,
     signer,
   );
 
@@ -83,8 +91,8 @@ export const deployZapGettersLibrary = async () => {
 
 export const deployZapDispute = async () => {
   const zapDisputeFactory = new ethers.ContractFactory(
-    abis.zapDisputeAbi,
-    bytecodes.zapDisputeByteCode,
+    disputeJson.abi,
+    disputeJson.bytecode,
     signer,
   );
 
@@ -96,10 +104,11 @@ export const deployZapDispute = async () => {
 }
 
 export const deployZapStake = async (_zapDisputeAddress: string) => {
-  const linkedBytecode = bytecodes.zapStakeByteCode.replaceAll(disputeCode, _zapDisputeAddress.slice(2, _zapDisputeAddress.length).toLowerCase());
+  const linkedBytecode = stakeJson.bytecode.replaceAll(disputeCode, _zapDisputeAddress.slice(2, _zapDisputeAddress.length).toLowerCase());
   // zapStakeByteCode.replaceAll(disputeCode, _zapDisputeAddress.slice(2, _zapDisputeAddress.length));
+  console.log(linkedBytecode)
   const zapStakeFactory = new ethers.ContractFactory(
-    abis.zapStakeAbi,
+    stakeJson.abi,
     linkedBytecode,
     signer,
   );
