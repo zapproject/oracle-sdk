@@ -1,8 +1,8 @@
 import { ethers } from 'ethers';
 
-import * as abis from './contract/abi';
+/* import * as abis from './contract/abi';
 
-import * as bytecodes from './contract/bytecode';
+import * as bytecodes from './contract/bytecode'; */
 
 import * as disputeJson from '@zapprotocol/bsc-contracts/artifacts/contracts/zap-miner/libraries/ZapDispute.sol/ZapDispute.json'
 
@@ -10,7 +10,15 @@ import * as gettersJson from '@zapprotocol/bsc-contracts/artifacts/contracts/zap
 
 import * as stakeJson from '@zapprotocol/bsc-contracts/artifacts/contracts/zap-miner/libraries/ZapStake.sol/ZapStake.json'
 
-console.log(stakeJson.abi, stakeJson.bytecode)
+import * as zapLibraryJson from '@zapprotocol/bsc-contracts/artifacts/contracts/zap-miner/libraries/ZapLibrary.sol/ZapLibrary.json'
+
+import * as vaultJson from '@zapprotocol/bsc-contracts/artifacts/contracts/zap-miner/Vault.sol/Vault.json'
+
+import * as zapJson from '@zapprotocol/bsc-contracts/artifacts/contracts/zap-miner/Zap.sol/Zap.json'
+
+import * as zapMasterJson from '@zapprotocol/bsc-contracts/artifacts/contracts/zap-miner/ZapMaster.sol/ZapMaster.json'
+
+import * as zapTokenJson from '@zapprotocol/bsc-contracts/artifacts/contracts/token/ZapToken.sol/ZapToken.json'
 
 const provider = new ethers.providers.JsonRpcProvider('http://localhost:8545');
 
@@ -24,11 +32,11 @@ let zapAddress: string;
 let zapMasterAddress: string;
 
 export const deployZap = async (tokenAddress: string, _zapDisputeAddress: string, _zapStakeAddress: string, _zapLibraryAddress: string) => {
-  const linkedBytecode = bytecodes.zapByteCode.replaceAll(disputeCode, _zapDisputeAddress.slice(2, _zapDisputeAddress.length).toLowerCase());
+  const linkedBytecode = zapJson.bytecode.replaceAll(disputeCode, _zapDisputeAddress.slice(2, _zapDisputeAddress.length).toLowerCase());
   const linkedBytecode2 = linkedBytecode.replaceAll(stakeCode, _zapStakeAddress.slice(2, _zapStakeAddress.length).toLowerCase());
   const linkedBytecode3 = linkedBytecode2.replaceAll(libraryCode, _zapLibraryAddress.slice(2, _zapLibraryAddress.length).toLowerCase());
   const zapFactory = new ethers.ContractFactory(
-    abis.zapAbi,
+    zapJson.abi,
     linkedBytecode3,
     signer,
   );
@@ -43,9 +51,9 @@ export const deployZap = async (tokenAddress: string, _zapDisputeAddress: string
 };
 
 export const deployZapMaster = async (_zapAddress: string, tokenAddress: string, _zapStakeAddress: string) => {
-  const linkedBytecode = bytecodes.zapMasterBytecode.replace(stakeCode, _zapStakeAddress.slice(2, _zapStakeAddress.length).toLowerCase());
+  const linkedBytecode = zapMasterJson.bytecode.replace(stakeCode, _zapStakeAddress.slice(2, _zapStakeAddress.length).toLowerCase());
   const zapMasterFactory = new ethers.ContractFactory(
-    abis.zapMasterAbi,
+    zapMasterJson.abi,
     linkedBytecode,
     signer,
   );
@@ -63,8 +71,8 @@ export const deployZapMaster = async (_zapAddress: string, tokenAddress: string,
 
 export const deployZapToken = async () => {
   const zapTokenFactory = new ethers.ContractFactory(
-    abis.zapTokenAbi,
-    bytecodes.zapTokenByteCode,
+    zapTokenJson.abi,
+    zapTokenJson.bytecode,
     signer,
   );
 
@@ -106,7 +114,6 @@ export const deployZapDispute = async () => {
 export const deployZapStake = async (_zapDisputeAddress: string) => {
   const linkedBytecode = stakeJson.bytecode.replaceAll(disputeCode, _zapDisputeAddress.slice(2, _zapDisputeAddress.length).toLowerCase());
   // zapStakeByteCode.replaceAll(disputeCode, _zapDisputeAddress.slice(2, _zapDisputeAddress.length));
-  console.log(linkedBytecode)
   const zapStakeFactory = new ethers.ContractFactory(
     stakeJson.abi,
     linkedBytecode,
@@ -122,8 +129,8 @@ export const deployZapStake = async (_zapDisputeAddress: string) => {
 
 export const deployZapLibrary = async () => {
   const zapLibraryFactory = new ethers.ContractFactory(
-    abis.zapLibraryAbi,
-    bytecodes.zapLibraryByteCode,
+    zapLibraryJson.abi,
+    zapLibraryJson.bytecode,
     signer,
   );
 
@@ -136,8 +143,8 @@ export const deployZapLibrary = async () => {
 
 export const deployVault = async (_zapMasterAddress: string, zapToken: string) => {
   const vaultFactory = new ethers.ContractFactory(
-    abis.vaultAbi,
-    bytecodes.vaultByteCode,
+    vaultJson.abi,
+    vaultJson.bytecode,
     signer,
   );
 
