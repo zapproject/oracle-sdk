@@ -273,6 +273,28 @@ export class ZapMaster {
   }
 
   /**
+   * Gets the status of the disptue type
+   * @returns String of the dispute type status. 1 = noraml dispute, 2 = Zap.sol change proposal, 3 = Vault.sol change proposal
+   */
+
+  public getDisputeType = async (disputeId: BigNumberish) => {
+    const typeNum = await this.zapMaster.getAllDisputeVars(disputeId);
+    console.log("Type",typeNum[6]);
+    switch(String(typeNum[6])){
+      case "0":
+        return "Normal Dispute";
+      case "1":
+        return "Zap Contract Change";
+      case "2":
+        return "Zap Master Contract Change";
+      case "3":
+        return "Vault Contract Change";
+      default:
+        return "Unknown ID";
+    }
+  }
+
+  /**
    * Retreives the stake amount
    * @returns The Promise of the stake amount
    */
