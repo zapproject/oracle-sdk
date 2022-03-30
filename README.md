@@ -1,6 +1,6 @@
 # Zap Oracle SDK
 
-[![Node.js Test CI](https://github.com/zapproject/oracle-sdk/actions/workflows/test-ci.yml/badge.svg)](https://github.com/zapproject/oracle-sdk/actions/workflows/test-ci.yml)
+[![Node.js Test CI](https://github.com/zapproject/oracle-sdk/actions/workflows/test-ci.yaml/badge.svg)](https://github.com/zapproject/oracle-sdk/actions/workflows/test-ci.yaml)
 
 ## Classes
 
