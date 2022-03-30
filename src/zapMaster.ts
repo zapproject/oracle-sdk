@@ -14,7 +14,7 @@ import { contractAddresses } from "./utils";
  * Exposes all the getters concerning the Oracles.
  */
 export class ZapMaster {
-  public readonly zapMaster: Contract;
+  private zapMaster: Contract;
   public readonly chainId: number;
   public readonly signer: Signer;
 

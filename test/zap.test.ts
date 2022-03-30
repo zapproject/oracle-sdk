@@ -93,6 +93,8 @@ describe("Zap Class", () => {
     zapStakeAddresses["1337"] = zapStake.address;
     zapDisputeAddresses["1337"] = zapDispute.address;
     vaultAddresses["1337"] = zapVault.address;
+
+    zap = zap.attach(zapMaster.address);
   });
 
   describe("Staking", () => {
@@ -324,7 +326,7 @@ describe("Zap Class", () => {
     });
   });
 
-  describe.only("Dispute", async () => {
+  describe("Dispute", async () => {
     beforeEach(async () => {
       await token.allocate(zapMaster.address, "10000000000000000000000000");
       for (let i = 1; i <= 5; i++) {
@@ -355,7 +357,8 @@ describe("Zap Class", () => {
         "json(https://api.binance.com/api/v1/klines?symbol=BTCUSDT&interval=1d&limit=1).0.4";
       const _zapClass = new Zap(1337, signers[1]);
       await _zapClass.approveSpending(60000);
-      await _zapClass.zap.requestData(api, symbol, 100000, 52);
+      zap = zap.attach(zapMaster.address);
+      await zap.connect(signers[1]).requestData(api, symbol, 100000, 52);
 
       for (var i = 1; i <= 5; i++) {
         const _address = await signers[i].getAddress();
@@ -372,10 +375,10 @@ describe("Zap Class", () => {
               uint256 _difficutly,
               uint256 _tip
             */
-        const newCurrentVars: any = await zapClass.zap.getNewCurrentVariables();
+        const newCurrentVars: any = await zap.getNewCurrentVariables();
 
         // Each Miner will submit a mining solution
-        const mining = await zapClass.zap.submitMiningSolution(
+        const mining = await zap.submitMiningSolution(
           "nonce",
           1,
           1200
@@ -436,7 +439,7 @@ describe("Zap Class", () => {
       ).to.be.rejectedWith("Only stakers can begin a dispute");
 
       // Connect  to signer whom is staked
-      await zapClass.zap.connect(signers[1]);
+      zap = zap.connect(signers[1]);
       const _zapClass = new Zap(1337, signers[1]);
       await _zapClass.dispute("1", String(timeStamp), "4");
 
@@ -485,7 +488,7 @@ describe("Zap Class", () => {
       //////////
     });
 
-    it.only("Should be able to dispute with token balance exactly equal to disputeFee.", async () => {
+    it("Should be able to dispute with token balance exactly equal to disputeFee.", async () => {
       // main actor in this test case
       let disputer = await signers[1].getAddress();
 
@@ -647,7 +650,8 @@ describe("Zap Class", () => {
         "json(https://api.binance.com/api/v1/klines?symbol=BTCUSDT&interval=1d&limit=1).0.4";
       const _zapClass = new Zap(1337, signers[1]);
       await _zapClass.approveSpending(60000);
-      await _zapClass.zap.requestData(api, symbol, 100000, 52);
+      zap = zap.connect(signers[1]).attach(zapMaster.address);
+      await zap.requestData(api, symbol, 100000, 52);
 
       for (var i = 1; i <= 5; i++) {
         const _address = await signers[i].getAddress();
@@ -663,10 +667,10 @@ describe("Zap Class", () => {
               uint256 _difficutly,
               uint256 _tip
             */
-        const newCurrentVars: any = await zapClass.zap.getNewCurrentVariables();
+        const newCurrentVars: any = await zap.getNewCurrentVariables();
 
         // Each Miner will submit a mining solution
-        const mining = await zapClass.zap.submitMiningSolution(
+        const mining = await zap.submitMiningSolution(
           "nonce",
           1,
           1200
@@ -749,8 +753,8 @@ describe("Zap Class", () => {
     });
   });
 
-  describe.only("Tally Votes", async function () {
-    this.timeout(200000);
+  describe("Tally Votes", async function () {
+    
     beforeEach(async () => {
       await token.allocate(zapMaster.address, "10000000000000000000000000");
       for (let i = 1; i <= 15; i++) {
@@ -773,7 +777,8 @@ describe("Zap Class", () => {
         "json(https://api.binance.com/api/v1/klines?symbol=BTCUSDT&interval=1d&limit=1).0.4";
       const _zapClass = new Zap(1337, signers[1]);
       await _zapClass.approveSpending(60000);
-      await _zapClass.zap.requestData(api, symbol, 100000, 52);
+      zap = zap.connect(signers[1]).attach(zapMaster.address);
+      await zap.requestData(api, symbol, 100000, 52);
 
       for (var i = 1; i <= 5; i++) {
         const _address = await signers[i].getAddress();
@@ -789,10 +794,10 @@ describe("Zap Class", () => {
               uint256 _difficutly,
               uint256 _tip
             */
-        const newCurrentVars: any = await zapClass.zap.getNewCurrentVariables();
+        const newCurrentVars: any = await zap.getNewCurrentVariables();
 
         // Each Miner will submit a mining solution
-        const mining = await zapClass.zap.submitMiningSolution(
+        const mining = await zap.submitMiningSolution(
           "nonce",
           1,
           1200
@@ -879,7 +884,7 @@ describe("Zap Class", () => {
         .tallyVotes(1)
         .should.be.rejectedWith("Cannot vote at this time");
     });
-    it.only("Should tally votes", async () => {
+    it("Should tally votes", async () => {
       for (let i = 6; i <= 12; i++) {
         const zapClass = new Zap(1337, signers[i]);
         await zapClass.vote(1, i % 2 == 0);

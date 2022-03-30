@@ -33,7 +33,7 @@ chai.use(chaiAsPromised);
 
 chai.should();
 
-describe.only("ZapMaster", () => {
+describe("ZapMaster", () => {
   let signer: Signer;
   let zapVault: Contract;
   let zapMaster: ZapMaster;
@@ -94,14 +94,16 @@ describe.only("ZapMaster", () => {
     zapDisputeAddresses["1337"] = zapDispute.address;
     vaultAddresses["1337"] = zapVault.address;
 
-    zapMaster = new ZapMaster(1337, signers[1]);
+    zap = zap.connect(signers[1]).attach(zapMasterDeployed.address);
 
-    await stake(zapMasterDeployed);
+    zapMaster = new ZapMaster(1337, signers[1]);
+    
+    await stake();
 
     await requestData();
   });
 
-  async function stake(zapMasterC: Contract) {
+  async function stake() {
     await token.allocate(
       zapMasterAddresses[1337],
       "10000000000000000000000000"
@@ -143,14 +145,14 @@ describe.only("ZapMaster", () => {
 
     let allowance = await zapMaster.allowance(await signers[1].getAddress(), zapMasterAddresses[1337])
     expect(String(allowance)).to.equal("52000000000000000000000000000000000000");
-
-    await _zapClass.zap.requestData(api, symbol, 100000, 10);
+    
+    await zap.requestData(api, symbol, 100000, 10);
 
     symbol = "ETH/USDT";
     // Request string
     api =
       "json(https://api.binance.com/api/v1/klines?symbol=ETHUSDT&interval=1d&limit=1).0.4";
-    await _zapClass.zap.requestData(api, symbol, 100000, 1);
+    await zap.requestData(api, symbol, 100000, 1);
   }
 
   async function mine(){
@@ -164,22 +166,13 @@ describe.only("ZapMaster", () => {
           i === 5 ? "50000000000000000000000000" : "500000000000000000000000"
         );
 
-      const zapClass = new Zap(1337, signers[i]);
+      const newCurrentVars: any = await zap.getNewCurrentVariables();
 
-      const newCurrentVars: any = await zapClass.zap.getNewCurrentVariables();
-
-      const mining = await zapClass.zap.submitMiningSolution(
+      const mining = await zap.connect(signers[i]).submitMiningSolution(
         "nonce",
         1,
         1200
       );
-
-      const zmClass = new ZapMaster(1337, signers[1]);
-      const didMineStatus: boolean = await zmClass.zapMaster.didMine(
-        newCurrentVars[0],
-        _address
-      );
-      expect(didMineStatus).to.be.true;
     }
   }
 

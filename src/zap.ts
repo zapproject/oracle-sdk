@@ -7,7 +7,7 @@ import { contractAddresses } from "./utils";
  * Exposes state changing functionalities including staking, mining, and disputing.
  */
 export class Zap {
-    public readonly zap: Contract;
+    private zap: Contract;
     public readonly chainId: number;
     public readonly signer: Signer;
 
