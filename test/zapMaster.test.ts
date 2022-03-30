@@ -227,7 +227,7 @@ describe("ZapMaster", () => {
     expect(String(currentVar[4])).to.equal("100000");
   });
 
-  describe("Should retrieve all the getters for Disputed values", async function() {
+  describe.only("Should retrieve all the getters for Disputed values", async function() {
     beforeEach(async () => {
       await mine();
 
@@ -337,16 +337,6 @@ describe("ZapMaster", () => {
       expect(String(retrievedData)).to.equal("0");
 
 
-        // uint keccak256("requestId");//apiID of disputed value
-        // uint keccak256("timestamp");//timestamp of distputed value
-        // uint keccak256("value"); //the value being disputed
-        // uint keccak256("minExecutionDate");//7 days from when dispute initialized
-        // uint keccak256("numberOfVotes");//the number of parties who have voted on the measure
-        // uint keccak256("blockNumber");// the blocknumber for which votes will be calculated from
-        // uint keccak256("minerSlot"); //index in dispute array
-        // uint keccak256("quorum"); //quorum for dispute vote NEW
-        // uint keccak256("fee"); //fee paid corresponding to dispute
-
         const requestId = await zapMasterClass.getDisputeUintVars(1, "requestId")
         const timestampDispute = await zapMasterClass.getDisputeUintVars(1, "timestamp")
         const valueDispute = await zapMasterClass.getDisputeUintVars(1, "value")
@@ -356,6 +346,7 @@ describe("ZapMaster", () => {
         const minerSlot = await zapMasterClass.getDisputeUintVars(1, "minerSlot")
         const quorum = await zapMasterClass.getDisputeUintVars(1, "quorum")
         const fee = await zapMasterClass.getDisputeUintVars(1, "fee")
+
 
         console.log("ID",String(requestId))
         console.log("time",String(timestampDispute))
@@ -375,6 +366,10 @@ describe("ZapMaster", () => {
         let blockNumber2 = await zapMasterClass.getDisputeBlockNumber(1);
         let minerSlot2 = await zapMasterClass.getDisputeMinerSlot(1);
         let quorum2 = await zapMasterClass.getDisputeQuorum(1);
+
+        const disputeType = await zapMasterClass.getDisputeType(1);
+
+        expect(disputeType).to.equal("Normal Dispute");
         
         expect(String(requestId2)).to.eq(String(requestId));
         expect(String(timestampDispute2)).to.eq(String(timestampDispute));
