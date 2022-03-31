@@ -982,8 +982,8 @@ const testnetUrl = `https://rinkeby.infura.io/v3/${process.env.PROJECT_ID}`;
 
 // Creates the instance for the Rinkeby testnet provider
 const provider = new ethers.providers.JsonRpcProvider(
-testnetUrl,
-rinkebyChainId
+    testnetUrl,
+    rinkebyChainId
 );
 
 // Creates the signer instance with the users private key and provider
