@@ -1,7 +1,7 @@
 {
-  "name": "@zapproject/oracle-sdk",
+  "name": "@zapprotocol/oracle-sdk",
   "version": "1.0.0",
-  "description": "",
+  "description": "This Software Development Kit is used to build on the Zap Price Feed Oracle.",
   "scripts": {
     "ganache": "ganache-cli --mnemonic 'ostrich mixture embrace quote comic until exchange rubber butter royal august stay' --accounts=20",
     "ganache-npx": "npx ganache-cli --mnemonic 'ostrich mixture embrace quote comic until exchange rubber butter royal august stay'",
@@ -14,7 +14,7 @@
   "files": [
     "dist"
   ],
-  "keywords": [],
+  "keywords": ["price feed", "oracle", "zap", "zapproject", "zap project", "zapprotocol", "zap protocol", "oracle sdk", "sdk", "oracle-sdk"],
   "author": "",
   "license": "ISC",
   "devDependencies": {
@@ -36,14 +36,12 @@
     "typescript": "^4.5.4"
   },
   "dependencies": {
-    "@typechain/ethers-v5": "^9.0.0",
     "assert": "^2.0.0",
     "chai-as-promised": "^7.1.1",
     "eth-sig-util": "^3.0.1",
     "ethereumjs-util": "^7.1.4",
     "ethers": "^5.5.2",
     "tiny-invariant": "^1.2.0",
-    "tiny-warning": "^1.0.3",
-    "typechain": "^7.0.1"
+    "tiny-warning": "^1.0.3"
   }
 }
