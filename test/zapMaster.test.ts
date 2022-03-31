@@ -227,7 +227,7 @@ describe("ZapMaster", () => {
     expect(String(currentVar[4])).to.equal("100000");
   });
 
-  describe.only("Should retrieve all the getters for Disputed values", async function() {
+  describe("Should retrieve all the getters for Disputed values", async function() {
     beforeEach(async () => {
       await mine();
 
