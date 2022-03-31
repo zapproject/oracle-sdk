@@ -12,16 +12,16 @@ Index
 
 ### Constructors
 
-*   [constructor](Vault.html#constructor)
+*   [constructor](#constructor)
 
 ### Properties
 
-*   [chainId](Vault.html#chainId)
-*   [signer](Vault.html#signer)
+*   [chainId](#chainId)
+*   [signer](#signer)
 
 ### Methods
 
-*   [userBalance](Vault.html#userBalance)
+*   [userBalance](#userBalance)
 
 ### Examples
 
