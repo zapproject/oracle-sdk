@@ -63,13 +63,13 @@ Constructors
 Properties
 ----------
 
-### Readonly chainId[](#chainId)
+### chainId[](#chainId)
 
 chainId: number
 
 *   Defined in [zap.ts:11](https://github.com/zapproject/oracle-sdk/blob/726c78c/src/zap.ts#L11)
 
-### Readonly signer[](#signer)
+### signer[](#signer)
 
 signer: Signer
 
@@ -237,7 +237,7 @@ Methods
 Examples
 --------
 
-### Creating a Zap class instance[](#instantiation)
+### instantiation[](#instantiation)
 
 For this example, we are using chainId 4 and a Rinkeby provider node. 
 The chainId and provider node can be replaced with the other available chainId's supported by Zap.

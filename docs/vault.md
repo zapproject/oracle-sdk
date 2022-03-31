@@ -56,13 +56,13 @@ Constructors
 Properties
 ----------
 
-### Readonly chainId[](#chainId)
+### chainId[](#chainId)
 
 chainId: number
 
 *   Defined in [vault.ts:10](https://github.com/zapproject/oracle-sdk/blob/726c78c/src/vault.ts#L10)
 
-### Readonly signer[](#signer)
+### signer[](#signer)
 
 signer: Signer
 
@@ -96,7 +96,7 @@ Methods
 Examples
 --------
 
-### Creating a Vault class instance[](#instantiation)
+### Instantiation[](#instantiation)
 
 For this example, we are using chainId 4 and a Rinkeby provider node. 
 The chainId and provider node can be replaced with the other available chainId's supported by Zap.
