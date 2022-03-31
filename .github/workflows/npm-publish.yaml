@@ -32,6 +32,6 @@ jobs:
       - run: npm config set '//registry.npmjs.org/:_authToken' "${NPM_TOKEN}"
       - run: git config --global user.email "taejoonn@gmail.com" --
       - run: git config --global user.name "zapproject"
-      # - run: npm version patch -m "[RELEASE] %s [skip actions]"
+      - run: npm version patch -m "[RELEASE] %s [skip actions]"
       - run: npm publish --access public
       - run: git push
