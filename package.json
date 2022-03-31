@@ -1,6 +1,6 @@
 {
   "name": "@zapprotocol/oracle-sdk",
-  "version": "1.0.1",
+  "version": "1.0.1", 
   "description": "This Software Development Kit is used to build on the Zap Price Feed Oracle.",
   "scripts": {
     "ganache": "ganache-cli --mnemonic 'ostrich mixture embrace quote comic until exchange rubber butter royal august stay' --accounts=20",
