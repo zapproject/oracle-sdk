@@ -1,37 +1,21 @@
-name: Publish Package to NPM
-
+name: Publish to NPM
 on:
   push:
-    branches: 
-      - main
-
-env:
-  NPM_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+    branches: [ main ]
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [16.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
     steps:
-      - uses: actions/checkout@v2
-        with: 
-          token: ${{ secrets.USER_TOKEN }}
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: "yarn"
-      - run: yarn install --frozen-lockfile
-      - run: export NVM_DIR=~/.nvm
-      - run: source ~/.nvm/nvm.sh
-      - run: npm config set '//registry.npmjs.org/:_authToken' "${NPM_TOKEN}"
-      - run: git config --global user.email "taejoonn@gmail.com" --
-      - run: git config --global user.name "zapproject"
-      - run: npm version patch -m "[RELEASE] %s [skip actions]"
-      - run: npm publish --access public
-      - run: git push
+          node-version: 16
+      - run: npm i
+      - run: npx hardhat compile
+      # - run: npx hardhat test --no-compile
+      - uses: JS-DevTools/npm-publish@v1
+        with:
+          access: public
+          check-version: true  # this is the default, just making it explicit
+          token: ${{ secrets.NPM_ACCESS_TOKEN }}
