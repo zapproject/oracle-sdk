@@ -18,7 +18,6 @@ Index
 
 *   [chainId](Vault.html#chainId)
 *   [signer](Vault.html#signer)
-*   [vault](Vault.html#vault)
 
 ### Methods
 
@@ -64,11 +63,6 @@ signer: Signer
 
 *   Defined in [vault.ts:11](https://github.com/zapproject/oracle-sdk/blob/726c78c/src/vault.ts#L11)
 
-### Readonly vault[](#vault)
-
-vault: Contract
-
-*   Defined in [vault.ts:9](https://github.com/zapproject/oracle-sdk/blob/726c78c/src/vault.ts#L9)
 
 Methods
 -------

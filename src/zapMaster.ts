@@ -273,8 +273,9 @@ export class ZapMaster {
   }
 
   /**
-   * Gets the status of the disptue type
-   * @returns String of the dispute type status. 1 = noraml dispute, 2 = Zap.sol change proposal, 3 = Vault.sol change proposal
+   * Retreives the status of the dispute type
+   * @param disputeId - The ID of the dispute to reference
+   * @returns The Promise of the dispute type status. 1 = noraml dispute, 2 = Zap.sol change proposal, 3 = Vault.sol change proposal
    */
 
   public getDisputeType = async (disputeId: BigNumberish) => {

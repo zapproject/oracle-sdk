@@ -18,7 +18,6 @@ Index
 
 *   [chainId](#chainId)
 *   [signer](#signer)
-*   [zap](#zap)
 
 ### Methods
 
@@ -71,11 +70,6 @@ signer: Signer
 
 *   Defined in [zap.ts:12](https://github.com/zapproject/oracle-sdk/blob/726c78c/src/zap.ts#L12)
 
-### Readonly zap[](#zap)
-
-zap: Contract
-
-*   Defined in [zap.ts:10](https://github.com/zapproject/oracle-sdk/blob/726c78c/src/zap.ts#L10)
 
 Methods
 -------

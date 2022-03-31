@@ -18,7 +18,6 @@ Index
 
 *   [chainId](ZapMaster.html#chainId)
 *   [signer](ZapMaster.html#signer)
-*   [zapMaster](ZapMaster.html#zapMaster)
 
 ### Methods
 
@@ -108,11 +107,6 @@ signer: Signer
 
 *   Defined in [zapMaster.ts:19](https://github.com/zapproject/oracle-sdk/blob/726c78c/src/zapMaster.ts#L19)
 
-### Readonly zapMaster[](#zapMaster)
-
-zapMaster: Contract
-
-*   Defined in [zapMaster.ts:17](https://github.com/zapproject/oracle-sdk/blob/726c78c/src/zapMaster.ts#L17)
 
 Methods
 -------
@@ -936,3 +930,22 @@ Methods
     #### Returns Promise<any\>
     
     The Promise of the block data
+
+
+### getDisputeType[](#getDisputeType)
+
+*   getDisputeType(disputeId: BigNumberish): Promise<any\>
+
+*   *   Defined in [zapMaster.ts:280](https://github.com/zapproject/oracle-sdk/blob/726c78c/src/zapMaster.ts#L280)
+
+    Retreives the status of the dispute type
+
+    #### Parameters
+
+    *   ##### disputeId: BigNumberish
+
+        The ID of the dispute to reference
+
+    #### Returns Promise<any\>
+
+    The Promise of the dispute type status.
