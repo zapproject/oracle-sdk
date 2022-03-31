@@ -1,6 +1,6 @@
 {
   "name": "@zapprotocol/oracle-sdk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "This Software Development Kit is used to build on the Zap Price Feed Oracle.",
   "scripts": {
     "ganache": "ganache-cli --mnemonic 'ostrich mixture embrace quote comic until exchange rubber butter royal august stay' --accounts=20",
@@ -14,7 +14,18 @@
   "files": [
     "dist"
   ],
-  "keywords": ["price feed", "oracle", "zap", "zapproject", "zap project", "zapprotocol", "zap protocol", "oracle sdk", "sdk", "oracle-sdk"],
+  "keywords": [
+    "price feed",
+    "oracle",
+    "zap",
+    "zapproject",
+    "zap project",
+    "zapprotocol",
+    "zap protocol",
+    "oracle sdk",
+    "sdk",
+    "oracle-sdk"
+  ],
   "author": "",
   "license": "ISC",
   "devDependencies": {
