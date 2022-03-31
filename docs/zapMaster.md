@@ -12,60 +12,60 @@ Index
 
 ### Constructors
 
-*   [constructor](ZapMaster.html#constructor)
+*   [constructor](#constructor)
 
 ### Properties
 
-*   [chainId](ZapMaster.html#chainId)
-*   [signer](ZapMaster.html#signer)
+*   [chainId](#chainId)
+*   [signer](#signer)
 
 ### Methods
 
-*   [allowance](ZapMaster.html#allowance)
-*   [balanceOf](ZapMaster.html#balanceOf)
-*   [didVote](ZapMaster.html#didVote)
-*   [getAllDisputeVars](ZapMaster.html#getAllDisputeVars)
-*   [getCurrentMiningReward](ZapMaster.html#getCurrentMiningReward)
-*   [getCurrentRequestId](ZapMaster.html#getCurrentRequestId)
-*   [getCurrentTotalTips](ZapMaster.html#getCurrentTotalTips)
-*   [getCurrentVariables](ZapMaster.html#getCurrentVariables)
-*   [getDecimals](ZapMaster.html#getDecimals)
-*   [getDifficulty](ZapMaster.html#getDifficulty)
-*   [getDisputeBlockNumber](ZapMaster.html#getDisputeBlockNumber)
-*   [getDisputeCount](ZapMaster.html#getDisputeCount)
-*   [getDisputeFee](ZapMaster.html#getDisputeFee)
-*   [getDisputeIdByDisputeHash](ZapMaster.html#getDisputeIdByDisputeHash)
-*   [getDisputeMinExecDate](ZapMaster.html#getDisputeMinExecDate)
-*   [getDisputeMinerSlot](ZapMaster.html#getDisputeMinerSlot)
-*   [getDisputeNumVotes](ZapMaster.html#getDisputeNumVotes)
-*   [getDisputeQuorum](ZapMaster.html#getDisputeQuorum)
-*   [getDisputeRequestID](ZapMaster.html#getDisputeRequestID)
-*   [getDisputeTimestamp](ZapMaster.html#getDisputeTimestamp)
-*   [getDisputeUintVars](ZapMaster.html#getDisputeUintVars)
-*   [getDisputeValue](ZapMaster.html#getDisputeValue)
-*   [getMinersByRequestIdAndTimestamp](ZapMaster.html#getMinersByRequestIdAndTimestamp)
-*   [getMiningReward](ZapMaster.html#getMiningReward)
-*   [getNewValueCountbyRequestId](ZapMaster.html#getNewValueCountbyRequestId)
-*   [getRequestCount](ZapMaster.html#getRequestCount)
-*   [getRequestGranularity](ZapMaster.html#getRequestGranularity)
-*   [getRequestIdByRequestQIndex](ZapMaster.html#getRequestIdByRequestQIndex)
-*   [getRequestQ](ZapMaster.html#getRequestQ)
-*   [getRequestQPosition](ZapMaster.html#getRequestQPosition)
-*   [getRequestTotalTip](ZapMaster.html#getRequestTotalTip)
-*   [getRequestUintVars](ZapMaster.html#getRequestUintVars)
-*   [getRequestVars](ZapMaster.html#getRequestVars)
-*   [getSlotProgress](ZapMaster.html#getSlotProgress)
-*   [getStakeAmount](ZapMaster.html#getStakeAmount)
-*   [getStakerCount](ZapMaster.html#getStakerCount)
-*   [getStakerInfo](ZapMaster.html#getStakerInfo)
-*   [getSubmissionsByTimestamp](ZapMaster.html#getSubmissionsByTimestamp)
-*   [getTimeOfLastNewValue](ZapMaster.html#getTimeOfLastNewValue)
-*   [getTimeTarget](ZapMaster.html#getTimeTarget)
-*   [getTimestampbyRequestIDandIndex](ZapMaster.html#getTimestampbyRequestIDandIndex)
-*   [getUintVar](ZapMaster.html#getUintVar)
-*   [getVariablesOnDeck](ZapMaster.html#getVariablesOnDeck)
-*   [isInDispute](ZapMaster.html#isInDispute)
-*   [retrieveData](ZapMaster.html#retrieveData)
+*   [allowance](#allowance)
+*   [balanceOf](#balanceOf)
+*   [didVote](#didVote)
+*   [getAllDisputeVars](#getAllDisputeVars)
+*   [getCurrentMiningReward](#getCurrentMiningReward)
+*   [getCurrentRequestId](#getCurrentRequestId)
+*   [getCurrentTotalTips](#getCurrentTotalTips)
+*   [getCurrentVariables](#getCurrentVariables)
+*   [getDecimals](#getDecimals)
+*   [getDifficulty](#getDifficulty)
+*   [getDisputeBlockNumber](#getDisputeBlockNumber)
+*   [getDisputeCount](#getDisputeCount)
+*   [getDisputeFee](#getDisputeFee)
+*   [getDisputeIdByDisputeHash](#getDisputeIdByDisputeHash)
+*   [getDisputeMinExecDate](#getDisputeMinExecDate)
+*   [getDisputeMinerSlot](#getDisputeMinerSlot)
+*   [getDisputeNumVotes](#getDisputeNumVotes)
+*   [getDisputeQuorum](#getDisputeQuorum)
+*   [getDisputeRequestID](#getDisputeRequestID)
+*   [getDisputeTimestamp](#getDisputeTimestamp)
+*   [getDisputeUintVars](#getDisputeUintVars)
+*   [getDisputeValue](#getDisputeValue)
+*   [getMinersByRequestIdAndTimestamp](#getMinersByRequestIdAndTimestamp)
+*   [getMiningReward](#getMiningReward)
+*   [getNewValueCountbyRequestId](#getNewValueCountbyRequestId)
+*   [getRequestCount](#getRequestCount)
+*   [getRequestGranularity](#getRequestGranularity)
+*   [getRequestIdByRequestQIndex](#getRequestIdByRequestQIndex)
+*   [getRequestQ](#getRequestQ)
+*   [getRequestQPosition](#getRequestQPosition)
+*   [getRequestTotalTip](#getRequestTotalTip)
+*   [getRequestUintVars](#getRequestUintVars)
+*   [getRequestVars](#getRequestVars)
+*   [getSlotProgress](#getSlotProgress)
+*   [getStakeAmount](#getStakeAmount)
+*   [getStakerCount](#getStakerCount)
+*   [getStakerInfo](#getStakerInfo)
+*   [getSubmissionsByTimestamp](#getSubmissionsByTimestamp)
+*   [getTimeOfLastNewValue](#getTimeOfLastNewValue)
+*   [getTimeTarget](#getTimeTarget)
+*   [getTimestampbyRequestIDandIndex](#getTimestampbyRequestIDandIndex)
+*   [getUintVar](#getUintVar)
+*   [getVariablesOnDeck](#getVariablesOnDeck)
+*   [isInDispute](#isInDispute)
+*   [retrieveData](#retrieveData)
 
 ### Examples
 
@@ -77,7 +77,7 @@ Constructors
 
 ### constructor[](#constructor)
 
-*   new ZapMaster(chainId: number, signer: Signer): [ZapMaster](ZapMaster.html)
+*   new ZapMaster(chainId: number, signer: Signer): ZapMaster
 
 *   *   Defined in [zapMaster.ts:26](https://github.com/zapproject/oracle-sdk/blob/726c78c/src/zapMaster.ts#L26)
     
@@ -94,7 +94,7 @@ Constructors
         The signer of transactions
         
     
-    #### Returns [ZapMaster](ZapMaster.html)
+    #### Returns ZapMaster
     
 
 Properties

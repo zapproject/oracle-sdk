@@ -40,7 +40,7 @@ Constructors
 
 ### constructor[](#constructor)
 
-*   new Zap(chainId: number, signer: Signer): [Zap]()
+*   new Zap(chainId: number, signer: Signer): Zap
 
 *   *   Defined in [zap.ts:19](https://github.com/zapproject/oracle-sdk/blob/726c78c/src/zap.ts#L19)
     

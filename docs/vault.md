@@ -33,7 +33,7 @@ Constructors
 
 ### constructor[](#constructor)
 
-*   new Vault(chainId: number, signer: Signer): [Vault](Vault.html)
+*   new Vault(chainId: number, signer: Signer): Vault
 
 *   *   Defined in [vault.ts:18](https://github.com/zapproject/oracle-sdk/blob/726c78c/src/vault.ts#L18)
     
@@ -50,7 +50,7 @@ Constructors
         The signer of transactions
         
     
-    #### Returns [Vault](Vault.html)
+    #### Returns Vault
     
 
 Properties
