@@ -67,6 +67,11 @@ Index
 *   [isInDispute](ZapMaster.html#isInDispute)
 *   [retrieveData](ZapMaster.html#retrieveData)
 
+### Examples
+
+*   [instantiation](#instantiation)
+
+
 Constructors
 ------------
 
@@ -949,3 +954,47 @@ Methods
     #### Returns Promise<any\>
 
     The Promise of the dispute type status.
+
+
+Examples
+--------
+
+### Creating a ZapMaster class instance[](#instantiation)
+
+For this example, we are using chainId 4 and a Rinkeby provider node. 
+The chainId and provider node can be replaced with the other available chainId's supported by Zap.
+
+```
+// Requires dotenv to allow the reading of environment variables
+require("dotenv").config();
+
+// Rinkeby chainId
+const rinkebyChainId = 4;
+
+// Requires the ZapMaster class
+const { ZapMaster } = require('@zapprotocol/oracle-sdk');
+
+// Requires the ethers.js library
+const ethers = require("ethers");
+
+// Infura Rinkeby URL
+const testnetUrl = `https://rinkeby.infura.io/v3/${process.env.PROJECT_ID}`;
+
+// Creates the instance for the Rinkeby testnet provider
+const provider = new ethers.providers.JsonRpcProvider(
+testnetUrl,
+rinkebyChainId
+);
+
+// Creates the signer instance with the users private key and provider
+const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+
+// Creates the ZapMaster class instance on the Rinkeby testnet with the signer connected
+const zapMaster = new ZapMaster(rinkebyChainId, signer);
+
+const main = async () => {
+    let tx = await zapMaster.balanceOf(signer.getAddress());
+};
+
+main();
+```
