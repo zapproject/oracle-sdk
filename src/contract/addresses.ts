@@ -9,7 +9,7 @@ export const zapAddresses = {
   1: '',
 
   // BSC Testnet
-  97: '0x0401C4c3ed2318D480d9fC76eab90e744130Ad24',
+  97: '0xb4005CC3E3cB377Dd44429676313a18AF7ED799E',
 
   // BSC Mainnet
   56: '',
@@ -26,7 +26,7 @@ export const zapMasterAddresses = {
   1: '',
 
   // BSC Testnet
-  97: '0xaf0E98CD32C9d90A07eb62821eE7c0761bc6C44d',
+  97: '0x8c5c8051Ab9CD78544aBd8486a77D3839Ba67368',
 
   // BSC Mainnet
   56: '',
@@ -44,7 +44,7 @@ export const zapGettersLibraryAddresses = {
     1: '',
   
     // BSC Testnet
-    97: '0xBf992DCD1cEcb4b65F3f9482F4460Da31F1f3de9',
+    97: '0xE84B1FF5E100C83Bf4fa5D97706Fa3724C2F9ffd',
   
     // BSC Mainnet
     56: '',
@@ -61,7 +61,7 @@ export const zapDisputeAddresses = {
     1: '',
   
     // BSC Testnet
-    97: '0x1d3f2784cA9aD4d898bE75d713bfcCA1a496Bf2A',
+    97: '0x2F2f98784641d9CdFF080ADc22d8b824CE50Bd53',
   
     // BSC Mainnet
     56: '',
@@ -78,7 +78,7 @@ export const zapStakeAddresses = {
     1: '',
   
     // BSC Testnet
-    97: '0x66e1d8B5c55E1cd3493039AbA10058aF9D9CB421',
+    97: '0xD18dde4D6dEdc4085bf90e8b34640d07F350eBFe',
   
     // BSC Mainnet
     56: '',
@@ -95,7 +95,7 @@ export const zapLibraryAddresses = {
     1: '',
   
     // BSC Testnet
-    97: '0xB2fa5825C78d4007E44A41547C19d5B0c3598304',
+    97: '0xf1951F8B801f9DDDF263061A9E9342BdBFC614f5',
   
     // BSC Mainnet
     56: '',
@@ -112,7 +112,7 @@ export const vaultAddresses = {
     1: '',
   
     // BSC Testnet
-    97: '0x65952F0bCEbd63F00741E6EED48Bc62Cc44eFD74',
+    97: '0xd6F1260723B26A98892E97A32D13Aa363281Be40',
   
     // BSC Mainnet
     56: '',
