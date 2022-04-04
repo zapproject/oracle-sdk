@@ -1,6 +1,6 @@
-import { address } from "../config.json";
+import { address } from "./config.json";
 import { ethers, Signer, Wallet } from "ethers";
-import { Zap, ZapMaster, Vault } from "../src/index";
+import { Zap, ZapMaster, Vault } from "./src/index";
 
 
 const provider = new ethers.providers.JsonRpcProvider("https://data-seed-prebsc-1-s1.binance.org:8545/");
